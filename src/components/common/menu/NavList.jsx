@@ -9,7 +9,8 @@ import {
 
    } from "@material-ui/core";
 
-const NavList = ({links}) => {
+const NavList = ( { links } ) => {
+
   return (
     <div>
 

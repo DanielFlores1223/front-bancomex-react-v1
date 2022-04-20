@@ -1,4 +1,4 @@
-import React from 'react'
+import {useEffect} from 'react'
 import { Link } from 'react-router-dom'
 import {
 
@@ -11,19 +11,30 @@ import {
    } from "@material-ui/core";
 import Menu from '../common/menu/Menu'
 
-const LayoutCajero = () => {
+const LayoutCajero = ({setLoginSuccess, setRole}) => {
+
+  const closeSession = () => {
+    localStorage.clear();
+    setLoginSuccess(false);
+    setRole('');
+  }
+
   return (
     <div>
          <Menu>
                <ListItem button>
-                    <Link to="/cajero"> Inicio </Link>
+                    <Link to="/"> Inicio </Link>
                </ListItem>
                <ListItem button>
-                    <Link to="/cajero/depositar-cuenta"> Depositar cuenta </Link>
+                    <Link to="/depositar-cuenta"> Depositar cuenta </Link>
                </ListItem>
 
                <ListItem button>
                  <ListItemText primary="Link1" />
+               </ListItem>
+
+               <ListItem button>
+                  <ListItemText primary='Cerrar Sesión' onClick={closeSession} />
                </ListItem>
          </Menu>
     </div>

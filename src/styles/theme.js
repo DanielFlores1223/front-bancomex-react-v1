@@ -38,7 +38,12 @@ const theme = createTheme({
             main: '#4caf51',
           },
           divider: 'rgba(0,0,0,0.13)'
-     }
+     },
+      typography: {
+        button: {
+          fontSize: '10rem',
+        },
+      },
 });
 
 const darkTheme = createTheme({

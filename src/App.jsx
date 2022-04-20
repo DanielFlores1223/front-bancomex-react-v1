@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ThemeProvider } from '@material-ui/core/styles'
 import Button from "@mui/material/Button";
 import Login from './components/landing-page/login';
@@ -6,14 +6,30 @@ import Menu from './components/common/menu/Menu';
 import LayoutCajero from './components/cajero/LayoutCajero';
 import CajeroRoutes from './routes/CajeroRoutes';
 import {theme, darkTheme} from './styles/theme'
+import LandingRoutes from './routes/LandingRoutes';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [loginSuccess, setLoginSuccess] = useState(false);
+  const [role, setRole] = useState( (localStorage.getItem('role')) ?? '' );
+
+  useEffect(() => {
+    if(role !== '') {
+      localStorage.setItem('role', role);
+      setLoginSuccess(true);
+    }
+      
+  }, [role]);
 
   return (
-    <ThemeProvider theme={darkTheme}>
-        <Login />
-        {/*<CajeroRoutes />*/}
+    <ThemeProvider theme={theme}>
+        { !loginSuccess && (<LandingRoutes setLoginSuccess={setLoginSuccess} 
+                                           setRole={setRole} 
+                                           role={role}
+                                           />) }
+        
+        { loginSuccess && role === 'Cajero' &&  <CajeroRoutes setLoginSuccess={setLoginSuccess} 
+                                                              setRole={setRole} /> }
+
     </ThemeProvider>
   )
 }
