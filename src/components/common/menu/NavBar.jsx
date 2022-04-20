@@ -59,13 +59,8 @@ const NavBar = ({display}) => {
                           <MenuIcon />
                     </IconButton>
               </Hidden>
-
-               <div className={classes.title}>
-                    <p>Logo</p>
-               </div>
            </Toolbar>
           </AppBar>
-
           <div className={classes.offset}></div>
    </>
   )

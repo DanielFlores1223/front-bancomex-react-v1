@@ -39,11 +39,7 @@ const theme = createTheme({
           },
           divider: 'rgba(0,0,0,0.13)'
      },
-      typography: {
-        button: {
-          fontSize: '10rem',
-        },
-      },
+
 });
 
 const darkTheme = createTheme({
