@@ -2,6 +2,9 @@ import React from 'react';
 import { Form,Field,Formik } from 'formik';
 import Button from '@mui/material/Button';
 
+//codigo qr para la autorizacion 
+//utilizar renderizado condicionañ
+
 const ReposicionTarjeta = () => {
   return (
     <Formik>
@@ -18,6 +21,8 @@ const ReposicionTarjeta = () => {
                 <option>Deterioro</option>
                 <option>Destrucion</option> 
             </Field>
+            <label>Ingresar nuevo numero de tarjeta</label>
+            <Field type="number"/>
             <Button variant="contained">Reponer</Button>
         </Form>
     </Formik>

@@ -6,13 +6,14 @@ import Menu from './components/common/menu/Menu';
 import LayoutCajero from './components/cajero/LayoutCajero';
 import CajeroRoutes from './routes/CajeroRoutes';
 import {theme, darkTheme} from './styles/theme'
+import Ejecutivos from './components/gerente/Ejecutivos';
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <ThemeProvider theme={darkTheme}>
-        <Login />
+        <Login/>
         {/*<CajeroRoutes />*/}
     </ThemeProvider>
   )
