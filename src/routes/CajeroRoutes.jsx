@@ -4,6 +4,7 @@ import DepositarCuenta from '../components/cajero/DepositarCuenta'
 import Home from '../components/cajero/Home'
 import LayoutCajero from '../components/cajero/LayoutCajero'
 
+
 const CajeroRoutes = ({setLoginSuccess, setRole}) => {
   return (
      <BrowserRouter>
@@ -12,6 +13,9 @@ const CajeroRoutes = ({setLoginSuccess, setRole}) => {
                                                 setRole={setRole}/>}>
              <Route index element={<Home />} />
              <Route path='depositar-cuenta' element={<DepositarCuenta />} />
+             
+
+             
          </Route>
      </Routes>
   </BrowserRouter>
