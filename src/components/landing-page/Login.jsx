@@ -3,22 +3,35 @@ import { useFormik } from 'formik';
 import service from '../../service';
 import * as Yup from 'yup';
 import Button from '@mui/material/Button';
-import { Grid, TextField, makeStyles } from "@material-ui/core";
+import { Grid, TextField, makeStyles, Typography } from "@material-ui/core";
 import ImgLogin from '../../img/login-img.jpeg';
 import { Alert } from '@mui/material';
 import Spinner from '../common/spinner/Spinner';
+import Logo from '../../img/bancomex_color.svg';
 
 const styles = makeStyles((theme) => ({
     marginTextField: {
       marginBottom: '1rem',
     },
     marginDiv: {
-        margin: '3rem 1rem'
+        padding: '1rem 5rem',
+        maxHeight: '100vh',
     },
     alert: {
         maxWidth: '100%',
         marginBottom: '2rem'
     },
+    marginLogo: {
+        marginBottom: '1.5rem',
+    },
+    formLogin: {
+        padding: '2rem 4rem',
+        border: '2px solid #F8F9F9',
+        borderRadius: '10px',
+        background: '#F8F9F9',
+        maxHeight: '100%',
+    }
+
   }));
 
 const validationSchema = Yup.object({
@@ -83,15 +96,18 @@ const Login = ({setLoginSuccess, setRole, role}) => {
           setRole(jsonResponse.result[0].role);
           
           localStorage.setItem( 'role', role );
+          localStorage.setItem( 'name', jsonResponse.result[0].firstName )
           localStorage.setItem( 't' , jsonResponse.token );
 
 
      } catch (error) {
           //Alerta
           setShowSpinner(true);
-          console.log(error)
-          setErrorExist(true);
-          setMsgError('Algo salio mal... Intentelo mas tarde');
+          setTimeout(() => {
+            setShowSpinner(false); 
+            setErrorExist(true);
+            setMsgError('Algo salio mal... Intentelo mas tarde'); 
+          }, 2000);
 
           setTimeout(() => {
             setErrorExist(false);
@@ -104,16 +120,23 @@ const Login = ({setLoginSuccess, setRole, role}) => {
 
   return (
     <div className={classes.marginDiv}>
-        <Grid container spacing={2} mx={3}>
+        <Grid container justifyContent='center' className={classes.marginLogo}>
+            <img src={Logo} alt="logo" />
+        </Grid>
+        <Grid container spacing={1}>
             <Grid container 
                   item 
                   xs={12} 
                   md={7} 
                   lg={7} 
-                  alignItems="center" 
+                  direction='column' 
+                  alignItems="flex-start" 
                   justifyContent='center'
             >
-                <img src={ImgLogin} alt="img login" style={{height: '28rem'}} />
+                <Typography align="right" variant="h4">
+                    Hola, Bienvenido
+                </Typography>
+                <img src={ImgLogin} alt="img login" style={{ height: '28rem'}} />
             </Grid>
             <Grid container 
                   item 
@@ -124,8 +147,11 @@ const Login = ({setLoginSuccess, setRole, role}) => {
                   justifyContent='center' 
                   direction='column'
             >
-                <form onSubmit={formik.handleSubmit}>
+                <form onSubmit={formik.handleSubmit} className={classes.formLogin}>
                     {errorExist && (<Alert className={classes.alert} severity="error" fullWidth> {msgError} </Alert>)}
+                    <Typography align="center" variant="h4" className={classes.marginTextField}>
+                        Iniciar Sesión
+                    </Typography>
                     <TextField 
                         fullWidth
                         id='code'

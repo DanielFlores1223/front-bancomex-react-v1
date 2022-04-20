@@ -5,6 +5,7 @@ import Login from './components/landing-page/login';
 import Menu from './components/common/menu/Menu';
 import LayoutCajero from './components/cajero/LayoutCajero';
 import CajeroRoutes from './routes/CajeroRoutes';
+import EjecutivoRoutes from './routes/EjecutivoRoutes';
 import {theme, darkTheme} from './styles/theme'
 import LandingRoutes from './routes/LandingRoutes';
 
@@ -28,6 +29,9 @@ function App() {
                                            />) }
         
         { loginSuccess && role === 'Cajero' &&  <CajeroRoutes setLoginSuccess={setLoginSuccess} 
+                                                              setRole={setRole} /> }
+
+        { loginSuccess && role === 'Ejecutivo' &&  <EjecutivoRoutes setLoginSuccess={setLoginSuccess} 
                                                               setRole={setRole} /> }
 
     </ThemeProvider>
