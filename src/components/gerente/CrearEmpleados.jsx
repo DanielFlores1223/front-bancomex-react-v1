@@ -2,7 +2,7 @@ import React from 'react';
 import { Form,Field,Formik } from 'formik';
 import Button from '@mui/material/Button';
 
-const CrearEjecutivos = () => {
+const CrearEmpleados = () => {
   return (
     <Formik>
         <Form>
@@ -27,4 +27,4 @@ const CrearEjecutivos = () => {
   )
 }
 
-export default CrearEjecutivos
+export default CrearEmpleados
