@@ -53,7 +53,7 @@ const LayoutCajero = ({setLoginSuccess, setRole}) => {
              
               <LinkStyled to="/"> <span> Inicio </span> </LinkStyled>
               <LinkStyled to="/depositar-cuenta"> <span> Depositar cuenta </span></LinkStyled>
-
+              <LinkStyled to="/retirar-efectivo"> <span> Retirar efectivo </span></LinkStyled>
               <LinkStyled to='/' onClick={closeSession} > <span>Cerrar Sesión</span> </LinkStyled>
          </Menu>
     </div>
