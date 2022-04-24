@@ -8,6 +8,9 @@ import CajeroRoutes from './routes/CajeroRoutes';
 import EjecutivoRoutes from './routes/EjecutivoRoutes';
 import {theme, darkTheme} from './styles/theme'
 import LandingRoutes from './routes/LandingRoutes';
+import Cuentas from './components/gerente/Cuentas';
+import CrearCuenta from './components/ejecutivo/CrearCuenta';
+import FormularioBeneficiario from './components/ejecutivo/FormularioBeneficiario';
 
 function App() {
   const [loginSuccess, setLoginSuccess] = useState(false);
@@ -22,6 +25,7 @@ function App() {
   }, [role]);
 
   return (
+    
     <ThemeProvider theme={theme}>
         { !loginSuccess && (<LandingRoutes setLoginSuccess={setLoginSuccess} 
                                            setRole={setRole} 

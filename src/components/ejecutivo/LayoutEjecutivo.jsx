@@ -30,7 +30,7 @@ const LayoutEjecutivo = ({setLoginSuccess, setRole}) => {
                </ListItem>
 
                <ListItem button>
-                 <ListItemText primary="Link1" />
+                 <Link to="/crear-cuenta">Crear cuenta</Link>
                </ListItem>
 
                <ListItem button>
