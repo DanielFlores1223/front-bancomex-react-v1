@@ -5,31 +5,44 @@ import { makeStyles } from '@material-ui/core';
 import { InputLabel, MenuItem,  TextField, Grid } from '@mui/material';
 import Select from '@mui/material/Select'
 import FormControl from '@mui/material/FormControl';
-import {useState } from 'react'
+import {useEffect, useState } from 'react'
 import service from '../../service';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { textAlign } from '@mui/system';
 
 const styles = makeStyles ((theme) =>({
   marginTextField: {
-    marginBottom: '1rem',
+    
   },
   marginDiv: {
-      margin: '3rem 1rem',
-      
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  
   },
+  formEmployee: {
+    display:"flex",
+    width:"85%",
+    flexDirection:"column",
+    padding: '2rem 4rem',
+    border: '2px solid #F8F9F9',
+    borderRadius: '10px',
+
+    maxHeight: '100%',
+    gap:"1rem"
+},
+
+
+
 }));
  
-
-
 const validationSchema = Yup.object({
   firstName: Yup.string().required('El nombre es obligatorio'),
   lastName: Yup.string().required('El apellido es obligatorio'),
-  password: Yup.string(),
-  status: Yup.string().required('El estado es obligatorio'),
   role: Yup.string().required('El rol es obligatorio'),
   BusinessUnitId: Yup.number()
 });
@@ -39,40 +52,38 @@ const CrearEmpleados = () => {
   const [errorExist, setErrorExist] = useState(false);
   const [msgError, setMsgError] = useState('');
   const [rol, setRol] = useState ('');
-  const [area, setArea] = useState('');
+  const [area, setArea] = useState([]);
   const [clear, setClear] = useState(false);
   const [res, setRes] = useState({});
 
-
-  const classes = styles();
+  
+const classes = styles();
 
 const formik = useFormik({
   initialValues:{
     firstName:'',
     lastName:'',
-    password:'1234',
-    status:'',
-    role:'Cajero',
-    BusinessUnitId:1
+    role:'',
+    BusinessUnitId:''
     
   },
+
   validationSchema:validationSchema,
   onSubmit:(values) => {
-    console.log(values);
     createEmployee(values);
     
   }
 })
 
-const createEmployee = async ({firstName, lastName,  password, status, role, BusinessUnitId}) =>{
+const createEmployee = async ({firstName, lastName, role, BusinessUnitId}) =>{
   const {developURL} = service;
 
-  const data = {firstName,lastName, password,status,role,BusinessUnitId }
-  console.log('wewe',data)
+  const data = {firstName,lastName,role,BusinessUnitId }
+  console.log('data',data)
      const url = `${developURL}/employees`;
      const fetchConfig = {
           method: 'POST', 
-          headers: { 'Content-Type': 'application/json'} ,
+          headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('t')} ,
           body: JSON.stringify( data )
   }
 
@@ -99,10 +110,6 @@ const createEmployee = async ({firstName, lastName,  password, status, role, Bus
     console.log(jsonResponse.result)
 
 
-
-
-
-
 } catch (error) {
     //Alerta
     setShowSpinner(true);
@@ -119,33 +126,55 @@ const createEmployee = async ({firstName, lastName,  password, status, role, Bus
 
 }
 
+useEffect(()=>{
+  async function fetchData() {
+    const {developURL} = service;
+  const url = `${developURL}/businessunits`;
+  const fetchConfig = {
+       method: 'GET', 
+       headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('t')} ,   
+}
+
+  setShowSpinner(true)
+  const response = await fetch( url, fetchConfig );
+    const jsonResponse = await response.json();
+    console.log(jsonResponse)
+    setArea(jsonResponse.result)
+    setShowSpinner(false)
+
+
+}
+fetchData()
+}, [])
 
 
   return (
+    
     <div className={classes.marginDiv}>
-      <Grid container
-      sx = {{maxWidth:'80%'}}
-      mb ={3}          
-      >  
-              <Grid container 
+      
+     
+         <Grid container 
                   item 
-                  xs={1} 
+                  xs={12} 
                   md={5} 
-                  lg={10} 
+                  lg={5} 
+                  direction='column'
                   alignItems="center" 
                   justifyContent='center' 
-                  direction='column'
-                  mb ={3}
+                 
             >
               {!clear ? (
                 <form onSubmit={(e)=>{
                   e.preventDefault()
                   console.log(formik.values)
                   formik.handleSubmit()
-                }}>  
-            {/* <label>Nombre(s)</label> */}
-
+                }}
+                className={classes.formEmployee}
+                >  
+            
+            <h1 align = 'center'>Crear Empleado</h1>
             <TextField
+            fullWidth
             id='firstName'
             name='firstName'
             label='Nombre'
@@ -157,9 +186,10 @@ const createEmployee = async ({firstName, lastName,  password, status, role, Bus
             disabled={showSpinner}/>
 
             <TextField 
+            fullWidth
             id='lastName'
             name='lastName'
-            label='lastName'
+            label='Apellido'
             className={classes.marginTextField}
             value={formik.values.lastName}
             onChange={formik.handleChange}
@@ -167,19 +197,7 @@ const createEmployee = async ({firstName, lastName,  password, status, role, Bus
             helperText={formik.touched.code && formik.errors.lastName}
             disabled={showSpinner}/>
 
-            <label>Status</label>
-            <TextField 
-            id='status'
-            name='status'
-            label='status'
-            className={classes.marginTextField}
-            value={formik.values.status}
-            onChange={formik.handleChange}
-            error={formik.touched.code && Boolean(formik.errors.status)}
-            helperText={formik.touched.code && formik.errors.status}
-            disabled={showSpinner}
-            />
-
+            
         <FormControl fullWidth>
         <InputLabel id="role">Rol</InputLabel>
         <Select
@@ -187,6 +205,7 @@ const createEmployee = async ({firstName, lastName,  password, status, role, Bus
           value={formik.values.role}
           label="Rol"
           name='role'
+          className={classes.marginTextField}
           onChange={formik.handleChange}
         >
           <MenuItem value={"Cajero"}>Cajero</MenuItem>
@@ -195,23 +214,24 @@ const createEmployee = async ({firstName, lastName,  password, status, role, Bus
         </Select>
         </FormControl>
 
-        {/* <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Área</InputLabel>
+        <FormControl fullWidth>
+        <InputLabel id="BusinessUnitId">Área</InputLabel>
         <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={area}
+          labelId="BusinessUnitId"
+          id="BusinessUnitId"
+          className={classes.marginTextField}
+          name="BusinessUnitId"
+          value={formik.values.BusinessUnitId}
           label="Area"
-          onChange={(e)=>{formik.handleChange}}
+          onChange={formik.handleChange}
         >
-          <MenuItem value={"caja"}>Caja</MenuItem>
-          <MenuItem value={"credito"}>Credito</MenuItem>
-          <MenuItem value={"debito"}>Debito</MenuItem>
+          {area && area.length >0 && area.map((a)=>{
+            return (
+                <MenuItem key={a.id} value={a.id}>{a.name}</MenuItem>
+            )
+          } )}
         </Select>
-        </FormControl> */}
-
-
-            
+        </FormControl> 
             <Button   type="submit" variant="contained">Guardar</Button>
             </form>
               ) :<Dialog
@@ -225,6 +245,7 @@ const createEmployee = async ({firstName, lastName,  password, status, role, Bus
               </DialogTitle>
               <DialogContent>
                 <DialogContentText id="alert-dialog-description">
+                  
                   {res.code}
                 </DialogContentText>
               </DialogContent>
@@ -239,7 +260,6 @@ const createEmployee = async ({firstName, lastName,  password, status, role, Bus
               </DialogActions>
             </Dialog> }
     
-            </Grid>
             </Grid>
           </div>
     )
