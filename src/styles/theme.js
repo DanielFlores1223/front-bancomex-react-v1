@@ -4,7 +4,7 @@ const baseTheme = createTheme({
      typography: {
        fontFamily: "'Work Sans', sans-serif",
        fontSize: 14,
-       fontFamilySecondary: "'Roboto Condensed', sans-serif"
+       fontFamilySecondary: "'Roboto Condensed', sans-serif",
      }
 });
 
