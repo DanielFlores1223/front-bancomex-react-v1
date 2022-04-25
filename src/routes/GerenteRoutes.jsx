@@ -8,7 +8,7 @@ import EmpleadosId from '../components/gerente/EmpleadosId'
 import Home from '../components/gerente/Home'
 import LayoutGerente from '../components/gerente/LayoutGerente'
 
-const GerenteRoutes = (setLoginSuccess, setRole) => {
+const GerenteRoutes = ( {setLoginSuccess, setRole} ) => {
   return (
       <BrowserRouter>
       <Routes>
