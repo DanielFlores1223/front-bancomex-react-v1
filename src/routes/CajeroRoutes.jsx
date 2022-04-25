@@ -1,9 +1,11 @@
 import {useState, useEffect} from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import DepositarCuenta from '../components/cajero/DepositarCuenta'
+import RetirarEfectivo from '../components/cajero/RetirarEfectivo'
 import Home from '../components/cajero/Home'
 import LayoutCajero from '../components/cajero/LayoutCajero'
 import HacerCorte from '../components/cajero/HacerCorte';
+
 
 const CajeroRoutes = ({setLoginSuccess, setRole}) => {
   const [linkDisabled, setLinkDisabled] = useState(true);
@@ -24,6 +26,7 @@ const CajeroRoutes = ({setLoginSuccess, setRole}) => {
              { !linkDisabled && (
                <>
                 <Route path='depositar-cuenta' element={<DepositarCuenta />} />
+                <Route path='retirar-efectivo' element={<RetirarEfectivo />} />
                 <Route path='hacer-corte' element={<HacerCorte setLoginSuccess={setLoginSuccess} 
                                                                setRole={setRole}
                                                   />} />
@@ -31,6 +34,7 @@ const CajeroRoutes = ({setLoginSuccess, setRole}) => {
              )}
 
              <Route path='*' element={<Home />} />
+                                            
          </Route>
      </Routes>
   </BrowserRouter>
