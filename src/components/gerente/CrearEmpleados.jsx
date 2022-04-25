@@ -245,9 +245,13 @@ fetchData()
               </DialogTitle>
               <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                  
+
                   {res.code}
                 </DialogContentText>
+                <DialogContentText>
+                  Utiliza este código como contraseña temporal
+                </DialogContentText>
+
               </DialogContent>
               <DialogActions>
                 <Button onClick={()=>{
