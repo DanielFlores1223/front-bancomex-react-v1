@@ -30,7 +30,7 @@ const LayoutGerente = ({setLoginSuccess, setRole}) => {
                </ListItem>
 
                <ListItem button>
-                 <ListItemText primary="Link1" />
+                    <Link to = '/empleados'>Empleados</Link>
                </ListItem>
 
                <ListItem button>
