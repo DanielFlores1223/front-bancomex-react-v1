@@ -1,167 +1,329 @@
-import React from 'react';
-import { Form,Field,Formik } from 'formik';
-import {Button, TextField, Container, Box, MenuItem } from '@mui/material';
+import React from "react";
+import { useFormik } from "formik";
+import {useState} from 'react';
+import service from '../../service';
+import * as Yup from "yup";
 
-const currencies = [
+import {
+  Button,
+  TextField,
+  Container,
+  Box,
+  MenuItem,
+  InputLabel,
+  Select,
+  FormControl,
+  Alert,
+  FormHelperText
+} from "@mui/material";
+
+const validationSchema = Yup.object({
+  firstName: Yup.string().required("Por favor ingresa el nombre del cliente"),
+  lastName: Yup.string().required("Por favor ingresa el apellido del cliente"),
+  gender: Yup.string().required("Por favor ingresa el genero del cliente"),
+  street: Yup.string().required("Por favor ingresa la calle del cliente"),
+  extNumber: Yup.string().required("Por favor ingresa numero exterior de la direccion del cliente"),
+  suburb: Yup.string().required("Por favor ingresa la colonia del cliente"),
+  zipcode: Yup.string().required("Por favor ingresa el Codigo Postal del cliente" ),
+  city: Yup.string().required("Por favor ingresa la ciudad del cliente"),
+  state: Yup.string().required("Por favor ingresa el estado del cliente"),
+  phone: Yup.string().required("Por favor ingresa el teléfono del cliente"),
+  curp: Yup.string().required("Por favor ingresa la CURP del cliente"),
+  rfc: Yup.string().required("Por favor ingresa el RFC del cliente"),
+  ine: Yup.string().required("Por favor ingresa la INE del cliente"),
+  email: Yup.string().required("Por favor ingresa el email del cliente"),
+});
+
+const generos = [
   {
-    value: 'm',
-    label:'Masculino'
+    value: "m",
+    label: "Masculino",
   },
   {
-    value: 'f',
-    label: 'Femenino'
-  },{
-    value: 'o',
-    label: 'Otro'
+    value: "f",
+    label: "Femenino",
+  },
+  {
+    value: "o",
+    label: "Otro",
   },
 ];
 
+// States of the components
 const CrearCliente = () => {
-  const [currency, setCurrency] = React.useState('m');
 
+  const [errorExist, setErrorExist] = useState(false);
+  const [msgError, setMsgError] = useState('');
+
+
+  const formik = useFormik({
+    initialValues: {
+      firstName: "",
+      lastName: "",
+      gender: "m",
+      street: "",
+      intNumber: "",
+      extNumber: "",
+      suburb: "",
+      zipcode: "",
+      city: "",
+      state: "",
+      phone: "",
+      curp: "",
+      rfc: "",
+      ine: "",
+      email: ""
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      crear(values);
+    },
+  });
+
+  const crear = async (values) => {
+    const { developURL } = service;
+    const data = {...values}
+    console.log(data)
+    const url = `${developURL}/client`;
+    const fetchConfig = {
+      method: 'POST', 
+      headers: { 'Content-Type': 'application/json', 'Authorization':localStorage.getItem('t')} ,
+      body: JSON.stringify( data )
+    }
+
+    try{
+      const response = await fetch( url, fetchConfig );
+      const jsonResponse = await response.json();
+
+      if(jsonResponse.success) {
+        setErrorExist(true);
+        setMsgError('Se ha creado el cliente satisfactoriamente');
+        
+        setTimeout(() => {
+          setErrorExist(false);
+          setMsgError('');
+        }, 4000);
+        
+        return;
+      }
+      setErrorExist(true);
+      setMsgError('Hubo un error al crear el cliente');
+
+
+    } catch (error){
+      setErrorExist(true);
+      setMsgError('sjahfgajhsgfa'); 
+
+      setTimeout(() => {
+        setErrorExist(false);
+        setMsgError(''); 
+      },4000);
+    }
+  }
+
+  //
   const handleChange = (event) => {
-    setCurrency(event.target.value);
+    setGenero(event.target.value);
   };
 
-const sizeforms = "small";
-
   return (
-    <Formik>
-      <Container component="main" maxWidth="sm" sx={{mb:8}}>
-      <Form>
-      <TextField
-      fullWidth
-          size="${sizeforms}"
+    <Container component="main" maxWidth="sm" sx={{ mb: 8 }}>
+      <form onSubmit={formik.handleSubmit}>
+      {errorExist && (<Alert severity="success"> {msgError} </Alert>)}
+        <TextField
+          fullWidth
+          size="medium"
           sx={{ mb: 4 }}
-          id="nombre"
-          name="nombre"
+          id="firstName"
+          name="firstName"
           label="Nombre"
+          value={formik.values.firstName}
+          onChange={formik.handleChange}
+          error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+          helperText={formik.touched.firstName && formik.errors.firstName}
         />
-      <TextField
-      fullWidth
+        <TextField
+          fullWidth
           size="medium"
           sx={{ mt: 0, mb: 5 }}
-          id="apellidos"
-          name="apellidos"
+          id="lastName"
+          name="lastName"
           label="Apellidos"
+          value={formik.values.lastName}
+          onChange={formik.handleChange}
+          error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+          helperText={formik.touched.lastName && formik.errors.lastName}
         />
+        <FormControl fullWidth size="medium" sx={{ mt: 0, mb: 5 }}>
+          <InputLabel id="asdsaf">Género</InputLabel>
+          <Select
+            id="gender"
+            name="gender"
+            label="Género"
+            value={formik.values.gender}
+            onChange={formik.handleChange}
+            error={formik.touched.gender && Boolean(formik.errors.gender)}
+          >
+            <MenuItem value={"m"}>Masculino</MenuItem>
+            <MenuItem value={"f"}>Femenino</MenuItem>
+            <MenuItem value={"o"}>Otro</MenuItem>
+            
+          </Select>
+          <FormHelperText>{formik.touched.gender && formik.errors.gender}</FormHelperText>
+        </FormControl>
+
         <TextField
-      fullWidth
+          fullWidth
           size="medium"
           sx={{ mt: 0, mb: 5 }}
-          id="genero"
-          select
-          label="Género"
-          value={currency}
-          onChange={handleChange}
-        />
-        <TextField
-      fullWidth
-          size="medium"
-          sx={{ mt: 0, mb: 5 }}
-          id="domicilio"
-          name="domicilio"
+          id="street"
+          name="street"
           label="Domicilio"
+          value={formik.values.street}
+          onChange={formik.handleChange}
+          error={formik.touched.street && Boolean(formik.errors.street)}
+          helperText={formik.touched.street && formik.errors.street}
         />
         <TextField
-      fullWidth
+          fullWidth
           size="medium"
           sx={{ mt: 0, mb: 5 }}
-          id="interior"
-          name="interior"
-          label="No. interior"
-        />
-        <TextField
-      fullWidth
-          size="medium"
-          sx={{ mt: 0, mb: 5 }}
-          id="exterior"
-          name="exterior"
+          id="extNumber"
+          name="extNumber"
           label="No. exterior"
+          value={formik.values.extNumber}
+          onChange={formik.handleChange}
+          error={formik.touched.extNumber && Boolean(formik.errors.extNumber)}
+          helperText={formik.touched.extNumber && formik.errors.extNumber}
         />
         <TextField
-      fullWidth
+          fullWidth
           size="medium"
           sx={{ mt: 0, mb: 5 }}
-          id="colonia"
-          name="colonia"
+          id="intNumber"
+          name="intNumber"
+          label="No. interior"
+          value={formik.values.intNumber}
+          onChange={formik.handleChange}
+          error={formik.touched.intNumber && Boolean(formik.errors.intNumber)}
+          helperText={formik.touched.intNumber && formik.errors.intNumber}
+        />
+        <TextField
+          fullWidth
+          size="medium"
+          sx={{ mt: 0, mb: 5 }}
+          id="suburb"
+          name="suburb"
           label="Colonia"
+          value={formik.values.suburb}
+          onChange={formik.handleChange}
+          error={formik.touched.suburb && Boolean(formik.errors.suburb)}
+          helperText={formik.touched.suburb && formik.errors.suburb}
         />
         <TextField
-      fullWidth
+          fullWidth
           size="medium"
           sx={{ mt: 0, mb: 5 }}
-          id="cp"
-          name=""
+          id="zipcode"
+          name="zipcode"
           label="C.P"
+          value={formik.values.zipcode}
+          onChange={formik.handleChange}
+          error={formik.touched.zipcode && Boolean(formik.errors.zipcode)}
+          helperText={formik.touched.zipcode && formik.errors.zipcode}
         />
         <TextField
-      fullWidth
+          fullWidth
           size="medium"
           sx={{ mt: 0, mb: 5 }}
-          id="ciudad"
-          name="ciudad"
+          id="city"
+          name="city"
           label="Ciudad"
+          value={formik.values.city}
+          onChange={formik.handleChange}
+          error={formik.touched.city && Boolean(formik.errors.city)}
+          helperText={formik.touched.city && formik.errors.city}
         />
         <TextField
-      fullWidth
+          fullWidth
           size="medium"
           sx={{ mt: 0, mb: 5 }}
-          id="estado"
-          name="estado"
+          id="state"
+          name="state"
           label="Estado"
+          value={formik.values.state}
+          onChange={formik.handleChange}
+          error={formik.touched.state && Boolean(formik.errors.state)}
+          helperText={formik.touched.state && formik.errors.state}
         />
         <TextField
-      fullWidth
+          fullWidth
           size="medium"
           sx={{ mt: 0, mb: 5 }}
-          id="celular"
-          name="celular"
+          id="phone"
+          name="phone"
           label="Celular"
+          value={formik.values.phone}
+          onChange={formik.handleChange}
+          error={formik.touched.phone && Boolean(formik.errors.phone)}
+          helperText={formik.touched.phone && formik.errors.phone}
         />
         <TextField
-      fullWidth
+          fullWidth
           size="medium"
           sx={{ mt: 0, mb: 5 }}
           id="curp"
           name="curp"
           label="Curp"
+          value={formik.values.curp}
+          onChange={formik.handleChange}
+          error={formik.touched.curp && Boolean(formik.errors.curp)}
+          helperText={formik.touched.curp && formik.errors.curp}
         />
         <TextField
-      fullWidth
+          fullWidth
           size="medium"
           sx={{ mt: 0, mb: 5 }}
           id="rfc"
           name="rfc"
           label="RFC"
+          value={formik.values.rfc}
+          onChange={formik.handleChange}
+          error={formik.touched.rfc && Boolean(formik.errors.rfc)}
+          helperText={formik.touched.rfc && formik.errors.rfc}
         />
         <TextField
-      fullWidth
+          fullWidth
           size="medium"
           sx={{ mt: 0, mb: 5 }}
           id="ine"
           name="ine"
           label="INE"
+          value={formik.values.ine}
+          onChange={formik.handleChange}
+          error={formik.touched.ine && Boolean(formik.errors.ine)}
+          helperText={formik.touched.ine && formik.errors.ine}
         />
         <TextField
-      fullWidth
+          fullWidth
           size="medium"
           sx={{ mt: 0, mb: 5 }}
           id="email"
           name="email"
           label="Correo electrónico"
+          value={formik.values.email}
+          onChange={formik.handleChange}
+          error={formik.touched.email && Boolean(formik.errors.email)}
+          helperText={formik.touched.email && formik.errors.email}
         />
-        <label>Status</label>
-        <Field type="checkbox"/><label>Activo</label>
-        <Field type="checkbox"/><label>Inactivo</label>
+
         <Button color="primary" variant="contained" fullWidth type="submit">
-          Submit
+          Enviar
         </Button>
-      </Form>
+      
+      </form>
+    </Container>
+  );
+};
 
-      </Container>
-    </Formik>
-  )
-}
-
-export default CrearCliente
+export default CrearCliente;
