@@ -43,7 +43,7 @@ const CrearCuenta = () => {
             </CardContent>
             <CardActions>
             <ThemeProvider theme={theme}>
-                <Link to="/crear-cliente">
+                <Link to="/formulario-beneficiario">
                     <Button size="medium" color="primary" startIcon={<CreditCardIcon/>}>Crear</Button>
                 </Link>
                 </ThemeProvider>
