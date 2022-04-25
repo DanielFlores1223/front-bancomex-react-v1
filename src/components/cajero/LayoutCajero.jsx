@@ -1,4 +1,4 @@
-import {useEffect} from 'react'
+import {useEffect, useState} from 'react'
 import { Link } from 'react-router-dom'
 import {
 
@@ -37,7 +37,10 @@ const LinkStyled = styled(Link)`
 
 `;
 
-const LayoutCajero = ({setLoginSuccess, setRole}) => {
+const LayoutCajero = ({setLoginSuccess, setRole, setLinkDisabled, linkDisabled}) => {
+
+  const [disableClose, setDisableClose] = useState((localStorage.getItem('cb') 
+                                                    && localStorage.getItem('ccbo')) ?? false );
 
   const navigateTo = useNavigate();
   const closeSession = () => {
@@ -47,14 +50,30 @@ const LayoutCajero = ({setLoginSuccess, setRole}) => {
     navigateTo('/');
   }
 
+  useEffect(() => {
+    setDisableClose((localStorage.getItem('cb') && localStorage.getItem('ccbo')) ?? false);
+  }, [linkDisabled]);
+
   return (
     <div>
          <Menu>
              
               <LinkStyled to="/"> <span> Inicio </span> </LinkStyled>
-              <LinkStyled to="/depositar-cuenta"> <span> Depositar cuenta </span></LinkStyled>
-              <LinkStyled to="/retirar-efectivo"> <span> Retirar efectivo </span></LinkStyled>
-              <LinkStyled to='/' onClick={closeSession} > <span>Cerrar Sesión</span> </LinkStyled>
+
+              {
+                  !linkDisabled && (
+                    <>
+                      <LinkStyled to="/depositar-cuenta"> <span> Depositar cuenta </span></LinkStyled>
+                      <LinkStyled to="/retirar-efectivo"> <span> Retirar efectivo </span></LinkStyled>
+                    </>
+                  )
+              }
+
+              {
+                !disableClose && (
+                  <LinkStyled to='/' onClick={closeSession} > <span>Cerrar Sesión</span> </LinkStyled>
+                ) 
+              }
          </Menu>
     </div>
     
