@@ -1,30 +1,33 @@
 import React from "react";
 import { useFormik } from "formik";
-import {useState} from 'react';
-import service from '../../service';
+import service from "../../service";
 import * as Yup from "yup";
+import { useSnackbar } from 'notistack';
 
 import {
   Button,
   TextField,
   Container,
-  Box,
   MenuItem,
   InputLabel,
   Select,
   FormControl,
-  Alert,
-  FormHelperText
+  FormHelperText,
 } from "@mui/material";
 
+// Validaciones con Yup de cada uno de los campos del formulario
 const validationSchema = Yup.object({
   firstName: Yup.string().required("Por favor ingresa el nombre del cliente"),
   lastName: Yup.string().required("Por favor ingresa el apellido del cliente"),
   gender: Yup.string().required("Por favor ingresa el genero del cliente"),
   street: Yup.string().required("Por favor ingresa la calle del cliente"),
-  extNumber: Yup.string().required("Por favor ingresa numero exterior de la direccion del cliente"),
+  extNumber: Yup.string().required(
+    "Por favor ingresa numero exterior de la direccion del cliente"
+  ),
   suburb: Yup.string().required("Por favor ingresa la colonia del cliente"),
-  zipcode: Yup.string().required("Por favor ingresa el Codigo Postal del cliente" ),
+  zipcode: Yup.string().required(
+    "Por favor ingresa el Codigo Postal del cliente"
+  ),
   city: Yup.string().required("Por favor ingresa la ciudad del cliente"),
   state: Yup.string().required("Por favor ingresa el estado del cliente"),
   phone: Yup.string().required("Por favor ingresa el teléfono del cliente"),
@@ -49,11 +52,11 @@ const generos = [
   },
 ];
 
+
 // States of the components
 const CrearCliente = () => {
-
-  const [errorExist, setErrorExist] = useState(false);
-  const [msgError, setMsgError] = useState('');
+    // Notistick - Notificaciones
+    const { enqueueSnackbar } = useSnackbar();
 
 
   const formik = useFormik({
@@ -72,7 +75,7 @@ const CrearCliente = () => {
       curp: "",
       rfc: "",
       ine: "",
-      email: ""
+      email: "",
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
@@ -82,54 +85,44 @@ const CrearCliente = () => {
 
   const crear = async (values) => {
     const { developURL } = service;
-    const data = {...values}
-    console.log(data)
+    const data = { ...values };
+    console.log(data);
     const url = `${developURL}/client`;
     const fetchConfig = {
-      method: 'POST', 
-      headers: { 'Content-Type': 'application/json', 'Authorization':localStorage.getItem('t')} ,
-      body: JSON.stringify( data )
-    }
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("t"),
+      },
+      body: JSON.stringify(data),
+    };
 
-    try{
-      const response = await fetch( url, fetchConfig );
+    try {
+      const response = await fetch(url, fetchConfig);
       const jsonResponse = await response.json();
 
-      if(jsonResponse.success) {
-        setErrorExist(true);
-        setMsgError('Se ha creado el cliente satisfactoriamente');
-        
-        setTimeout(() => {
-          setErrorExist(false);
-          setMsgError('');
-        }, 4000);
-        
+      if (jsonResponse.success) {
+        enqueueSnackbar('Se ha creado el cliente satisfactoriamente', {variant:'success'} );
+
+
         return;
       }
-      setErrorExist(true);
-      setMsgError('Hubo un error al crear el cliente');
+      enqueueSnackbar('Hubo un error al crear el cliente', {variant:'error'} );
+    } catch (error) {
+      enqueueSnackbar('Hubo un error al enviar la petición', {variant:'error'} );
 
-
-    } catch (error){
-      setErrorExist(true);
-      setMsgError('sjahfgajhsgfa'); 
-
-      setTimeout(() => {
-        setErrorExist(false);
-        setMsgError(''); 
-      },4000);
     }
-  }
+  };
 
   //
   const handleChange = (event) => {
     setGenero(event.target.value);
   };
 
+
   return (
     <Container component="main" maxWidth="sm" sx={{ mb: 8 }}>
-      <form onSubmit={formik.handleSubmit}>
-      {errorExist && (<Alert severity="success"> {msgError} </Alert>)}
+      <form onSubmit={formik.handleSubmit}>        
         <TextField
           fullWidth
           size="medium"
@@ -167,9 +160,10 @@ const CrearCliente = () => {
             <MenuItem value={"m"}>Masculino</MenuItem>
             <MenuItem value={"f"}>Femenino</MenuItem>
             <MenuItem value={"o"}>Otro</MenuItem>
-            
           </Select>
-          <FormHelperText>{formik.touched.gender && formik.errors.gender}</FormHelperText>
+          <FormHelperText>
+            {formik.touched.gender && formik.errors.gender}
+          </FormHelperText>
         </FormControl>
 
         <TextField
@@ -317,10 +311,27 @@ const CrearCliente = () => {
           helperText={formik.touched.email && formik.errors.email}
         />
 
-        <Button color="primary" variant="contained" fullWidth type="submit">
-          Enviar
+        <Button
+          color="primary"
+          variant="contained"
+          fullWidth
+          type="submit"
+          sx={{ mb: 5 }}
+        >
+          Crear Cliente
         </Button>
-      
+        {/* <Button
+          color="primary"
+          variant="contained"
+          fullWidth
+          type="submit"
+          sx={{ mb: 5 }}
+        >
+          Agregar Beneficiario
+        </Button>
+        <Button color="primary" variant="contained" fullWidth type="submit">
+          Agregar Tarjeta
+        </Button> */}
       </form>
     </Container>
   );
