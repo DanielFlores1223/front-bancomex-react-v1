@@ -8,10 +8,11 @@ import {
     TextField,
     Container,
     Alert,
-    FormHelperText
+    FormHelperText,
+    Grid,
   } from "@mui/material";
   import Stack from '@mui/material/Stack';
-
+  import Spinner from '../common/spinner/Spinner';
 
   const validationSchema = Yup.object({
     firstName: Yup.string().required("Ingresa el nombre del beneficiario"),
@@ -26,6 +27,8 @@ import {
 const FormularioBeneficiario = () => {
   const [errorExist, setErrorExist] = useState(false);
   const [msgError, setMsgError] = useState('');
+  const [clear, setClear] = useState(false);
+  const [showSpinner, setShowSpinner] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -55,9 +58,12 @@ const FormularioBeneficiario = () => {
     }
 
     try{
+      setShowSpinner(true);
       const response = await fetch( url, fetchConfig );
       const jsonResponse = await response.json();
       console.log(jsonResponse);
+      setShowSpinner(false);
+      
       if(!jsonResponse.success){
         setErrorExist(true);
 
@@ -67,7 +73,9 @@ const FormularioBeneficiario = () => {
         }, 4000);
         return
       }
+      formik.resetForm();
     } catch (error){ 
+      setShowSpinner(true);
       console.log(error)
       setTimeout(()=>{
         setErrorExist(true);
@@ -83,8 +91,13 @@ const FormularioBeneficiario = () => {
 
   return (
     <Container component="main" maxWidth="sm" sx={{ mb: 8 }}>
-        <form onSubmit={formik.handleSubmit}>
+        <form onSubmit={(e)=>{
+          e.preventDefault()
+          formik.handleSubmit()
+        }}>
+        <Grid container spacing={2}>
         {errorExist && (<Alert severity="error" fullWidth> {msgError} </Alert>)}
+        <Grid item xs={12} sm={6}>
         <TextField
           fullWidth
           size="medium"
@@ -96,7 +109,10 @@ const FormularioBeneficiario = () => {
           onChange={formik.handleChange}
           error={formik.touched.firstName && Boolean (formik.errors.firstName)}
           helperText={formik.touched.firstName && formik.errors.firstName}
+          disabled={showSpinner}
         />
+        </Grid>
+        <Grid item xs={12} sm={6}>
         <TextField
           fullWidth
           size="medium"
@@ -108,7 +124,10 @@ const FormularioBeneficiario = () => {
           onChange={formik.handleChange}
           error={formik.touched.lastName && Boolean (formik.errors.lastName)}
           helperText={formik.touched.lastName && formik.errors.lasttName}
+          disabled={showSpinner}
         />
+        </Grid>
+        <Grid item xs={12} sm={6}>
         <Stack component="form" noValidate spacing={3}>
           <TextField
           fullWidth
@@ -125,8 +144,11 @@ const FormularioBeneficiario = () => {
           onChange={formik.handleChange}
           error={formik.touched.birthDate && Boolean (formik.errors.birthDate)}
           helperText={formik.touched.birthDate && formik.errors.birthDate}
+          disabled={showSpinner}
           />
         </Stack>
+        </Grid>
+        <Grid item xs={12} sm={6}>
         <TextField
           fullWidth
           size="medium"
@@ -138,7 +160,10 @@ const FormularioBeneficiario = () => {
           onChange={formik.handleChange}
           error={formik.touched.email && Boolean (formik.errors.email)}
           helperText={formik.touched.email && formik.errors.email}
+          disabled={showSpinner}
         />
+        </Grid>
+        <Grid item xs={12} sm={12}>
         <TextField
           fullWidth
           size="medium"
@@ -150,7 +175,10 @@ const FormularioBeneficiario = () => {
           onChange={formik.handleChange}
           error={formik.touched.phone && Boolean (formik.errors.phone)}
           helperText={formik.touched.phone && formik.errors.phone}
+          disabled={showSpinner}
         />
+        </Grid>
+        <Grid item xs={12} sm={6}>
         <TextField
           fullWidth
           size="medium"
@@ -162,7 +190,10 @@ const FormularioBeneficiario = () => {
           onChange={formik.handleChange}
           error={formik.touched.relation && Boolean (formik.errors.relation)}
           helperText={formik.touched.relation && formik.errors.relation}
+          disabled={showSpinner}
         />
+        </Grid>
+        <Grid item xs={12} sm={6}>
         <TextField
           fullWidth
           size="medium"
@@ -174,10 +205,14 @@ const FormularioBeneficiario = () => {
           onChange={formik.handleChange}
           error={formik.touched.porcentage && Boolean (formik.errors.porcentage)}
           helperText={formik.touched.porcentage && formik.errors.porcentage}
+          disabled={showSpinner}
         />
-        <Button color="primary" variant="contained" fullWidth type="submit">
+        </Grid>
+        </Grid>
+        <Button color="primary" variant="contained" fullWidth type="submit" onClick={()=>{setClear(true)}}>
           Submit
         </Button>
+          {showSpinner && <Spinner />} 
         </form>
     </Container>
   )
