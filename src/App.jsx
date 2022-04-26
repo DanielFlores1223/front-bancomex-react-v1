@@ -39,7 +39,7 @@ function App() {
         { loginSuccess && role === 'Ejecutivo' &&  <EjecutivoRoutes setLoginSuccess={setLoginSuccess} 
                                                               setRole={setRole} /> }
         
-        { loginSuccess && role == 'Gerente' && <GerenteRoutes setLoginSuccess = {setLoginSuccess}
+        { loginSuccess && role == 'Gerente' && <GerenteRoutes setLoginSuccess={setLoginSuccess}
                                                               setRole = {setRole}/>}
 
     </ThemeProvider>
