@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import CrearCliente from '../components/ejecutivo/CrearCliente'
+import TabsCuentas from '../components/ejecutivo/TabsCuentas'
 import CrearCuenta from '../components/ejecutivo/CrearCuenta'
 import FormularioBeneficiario from '../components/ejecutivo/FormularioBeneficiario'
 import Home from '../components/ejecutivo/Home'
@@ -13,7 +13,7 @@ const EjecutivoRoutes = ({setLoginSuccess, setRole}) => {
          <Route path='/' element={<LayoutEjecutivo setLoginSuccess={setLoginSuccess} 
                                                 setRole={setRole}/>}>
              <Route index element={<Home />} />
-             <Route path='crear-cliente' element={<CrearCliente />} />
+             <Route path='crear-cliente' element={<TabsCuentas/>}/>
              <Route path="formulario-beneficiario" element={<FormularioBeneficiario />}/>
              <Route path="crear-cuenta" element={<CrearCuenta />}/>
          </Route>
