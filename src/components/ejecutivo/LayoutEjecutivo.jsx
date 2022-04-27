@@ -1,5 +1,5 @@
 import {useEffect} from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {
 
      List,
@@ -10,32 +10,26 @@ import {
 
    } from "@material-ui/core";
 import Menu from '../common/menu/Menu'
+import { LinkStyled } from '../common/menu/LinkStyled'
 
 const LayoutEjecutivo = ({setLoginSuccess, setRole}) => {
 
+  const navigateTo = useNavigate();
   const closeSession = () => {
     localStorage.clear();
     setLoginSuccess(false);
     setRole('');
+    navigateTo('/');
   }
 
   return (
     <div>
          <Menu>
-               <ListItem button>
-                    <Link to="/"> Inicio </Link>
-               </ListItem>
-               <ListItem button>
-                    <Link to="/crear-cliente"> Crear Cliente </Link>
-               </ListItem>
-
-               <ListItem button>
-                 <ListItemText primary="Link1" />
-               </ListItem>
-
-               <ListItem button>
-                  <ListItemText primary='Cerrar Sesión' onClick={closeSession} />
-               </ListItem>
+                <LinkStyled to="/"> <span>Inicio</span> </LinkStyled>
+                <LinkStyled to="/crear-cliente"> <span> Tabs - Crear Cliente </span> </LinkStyled>
+                <LinkStyled to="/crear-cuenta"> <span>Crear cuenta</span> </LinkStyled>
+                <LinkStyled to="/credito"> <span>Solicitud de credito</span> </LinkStyled>
+                <LinkStyled to='/' onClick={closeSession} > <span>Cerrar Sesión</span> </LinkStyled>
          </Menu>
     </div>
   )
