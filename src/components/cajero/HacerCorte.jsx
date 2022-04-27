@@ -136,7 +136,7 @@ const HacerCorte = ({setLoginSuccess, setRole}) => {
 
    const registerCashCutOff = async ( values ) => {
           const { developURL } = service;
-          const CashCutOffId = getCCBCOId(); 
+          const CashCutOffId = Number(getCCBCOId()); 
           const url = `${developURL}/denominationchascutoff`;
 
           setShowSpinner(true);
@@ -144,11 +144,12 @@ const HacerCorte = ({setLoginSuccess, setRole}) => {
                for (const key in values) {
                
                     const data = { 
-                         cantidad: values[key],
+                         amount: values[key],
                          denomination: key,
                          CashCutOffId
                     }
                
+                    console.log(JSON.stringify(data))
                     const fetchConfig = {
                          method: 'POST', 
                          headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('t')} ,
@@ -157,6 +158,7 @@ const HacerCorte = ({setLoginSuccess, setRole}) => {
 
                     const response = await fetch(url, fetchConfig);
                     const responseJSON = await response.json();
+                    console.log(responseJSON)
                }
           
                await freeCashBox();     
@@ -235,7 +237,7 @@ const HacerCorte = ({setLoginSuccess, setRole}) => {
           
           const d = Math.sign(totalEnd - startValue) === -1 ? (totalEnd - startValue) * -1 : (totalEnd - startValue)
           const { developURL } = service;
-          const data = { totalEnd, differemces : d }
+          const data = { totalEnd, differences : d }
           
           const url = `${developURL}/cashcutoff/${getCCBCOId()}`;
           const fetchConfig = {

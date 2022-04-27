@@ -5,6 +5,7 @@ import CrearCuenta from '../components/ejecutivo/CrearCuenta'
 import FormularioBeneficiario from '../components/ejecutivo/FormularioBeneficiario'
 import Home from '../components/ejecutivo/Home'
 import LayoutEjecutivo from '../components/ejecutivo/LayoutEjecutivo'
+import Credito from '../components/ejecutivo/Credito'
 
 const EjecutivoRoutes = ({setLoginSuccess, setRole}) => {
   return (
@@ -16,6 +17,7 @@ const EjecutivoRoutes = ({setLoginSuccess, setRole}) => {
              <Route path='crear-cliente' element={<CrearCliente />} />
              <Route path="formulario-beneficiario" element={<FormularioBeneficiario />}/>
              <Route path="crear-cuenta" element={<CrearCuenta />}/>
+             <Route path="credito" element={<Credito />}/>
          </Route>
      </Routes>
   </BrowserRouter>
