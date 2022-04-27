@@ -1,50 +1,32 @@
 import { useState, useEffect } from 'react';
-import service from '../../service';
-import { Grid } from '@material-ui/core';
-
-const Home = () => {
-
-  const [token, setToken] = useState((localStorage.getItem('t')) ?? '')
-  const [cashBoxes, setCashBoxes] = useState([]);
+import { Box, Grid, Typography } from '@material-ui/core';
+import EscogerCaja from './EscogerCaja';
+import IniciarCaja from './IniciarCaja';
+import CajaDash from './CajaDash';
 
 
-  const getCashBoxes = async () => {
+const Home = ({setLinkDisabled}) => {
 
-    try {
-      const { developURL } = service;
-      const url = `${developURL}/cashboxes`;
-      const fetchConfig = {
-         method: 'GET', 
-         headers: { 'Content-Type': 'application/json', 'Authorization': token } ,
-      }
-
-      const response = await fetch(url, fetchConfig);
-      const jsonResponse = await response.json();
-      setCashBoxes(jsonResponse.result);
-    } catch (error) {
-      console.log(error)
-    }
-  
-  }
+  const [chooseCashBox, setChooseCashBox] = useState( Boolean(localStorage.getItem('cb')) );
+  const [startCash, setStartCash] = useState( 
+                                    ( localStorage.getItem('cb') && localStorage.getItem('cb') !== '') ? 'ready':'' );
 
   useEffect(() => {
-    getCashBoxes();
-  }, []);
+    setLinkDisabled((chooseCashBox && startCash !== 'ready' ));
+  }, [chooseCashBox, startCash]);
 
   return (
     <div>
-        <Grid container>
-          { cashBoxes.length > 0 &&
-
-              cashBoxes.map( cb => (
-                <Grid item xs={12} md={4}>
-                    <p> {cb.name} </p>
-                </Grid>
-              ) )
-
-          }
-          
-        </Grid>
+        { chooseCashBox && startCash === 'ready' && 
+              ( <CajaDash /> )
+        }
+        {
+          !chooseCashBox && startCash === '' && 
+                  (<EscogerCaja setChooseCashBox={setChooseCashBox} setStartCash={setStartCash} />)
+        }
+        {
+          startCash === 'wait' && (<IniciarCaja setStartCash={setStartCash} />)
+        }
     </div>
   )
 }

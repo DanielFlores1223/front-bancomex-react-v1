@@ -10,6 +10,7 @@ const LandingRoutes = ({setLoginSuccess, setRole, role}) => {
                                               setRole={setRole}
                                               role={role}
                                        />} />
+              <Route path='*' element={<Login />} />
           </Routes>
      </BrowserRouter>
   )
