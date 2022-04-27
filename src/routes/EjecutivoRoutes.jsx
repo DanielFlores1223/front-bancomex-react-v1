@@ -14,7 +14,6 @@ const EjecutivoRoutes = ({setLoginSuccess, setRole}) => {
                                                 setRole={setRole}/>}>
              <Route index element={<Home />} />
              <Route path='crear-cliente' element={<TabsCuentas/>}/>
-             <Route path="formulario-beneficiario" element={<FormularioBeneficiario />}/>
              <Route path="crear-cuenta" element={<CrearCuenta />}/>
          </Route>
      </Routes>
