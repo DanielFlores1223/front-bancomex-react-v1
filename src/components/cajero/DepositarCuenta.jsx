@@ -29,14 +29,14 @@ const styles = makeStyles((theme) => ({
 }));
 
 const validationSchemaFindAccount = Yup.object({
-  accountNumber: Yup
+  cardNumber: Yup
     .number()
     .typeError('Necesitas agregar un numero de cuenta')
     .required('El número de cuenta es obligatorio')
 });
 
 const validationSchemaDeposit = Yup.object({
-  accountNumber: Yup
+  cardNumber: Yup
     .number()
     .typeError('Necesitas agregar un numero de cuenta')
     .required('El número de cuenta es obligatorio'),
@@ -63,7 +63,7 @@ const DepositarCuenta = () => {
 
   const formikFindAccount = useFormik({
     initialValues: {
-      accountNumber: ''
+      cardNumber: ''
         
     },
     validationSchema: validationSchemaFindAccount,
@@ -75,7 +75,7 @@ const DepositarCuenta = () => {
 
   const formikDeposit = useFormik({
     initialValues: {
-      accountNumber: '',
+      cardNumber: '',
       customerFirstName: '',
       customerLastName: '',
       amountDeposit: ''
@@ -98,10 +98,10 @@ const DepositarCuenta = () => {
 
   }
 
-  const findAccount = async ({accountNumber}, resetForm) => {
+  const findAccount = async ({cardNumber}, resetForm) => {
     const { developURL } = service
     const token = localStorage.getItem('t')
-    const url = `${developURL}/accounts/byClient/${accountNumber}`
+    const url = `${developURL}/cards/byCardNumber/${cardNumber}`
     const fetchConfig = {
         method: 'GET', 
         headers: { 'Content-Type': 'application/json', 'Authorization': token}
@@ -112,20 +112,19 @@ const DepositarCuenta = () => {
       const response = await fetch( url, fetchConfig );
       const jsonResponse = await response.json();
       setShowSpinner(false);
-      console.log(jsonResponse)
       if( !jsonResponse.success ) {
         changeMsg('error','No se encontró una cuenta');
         return;
       }
-      let account = jsonResponse.result
-      if(!account.state){
+      let data = jsonResponse.result
+      if(!data.Account.state){
         changeMsg('error', 'La cuenta se encuentra desactivada')
-      }else if(!account.Client.active){
+      }else if(!data.Account.Client.active){
         changeMsg('error', 'El cliente se encuentra desactivada')
       }else{
-        formikDeposit.values.accountNumber = accountNumber
-        formikDeposit.values.customerFirstName = account.Client.firstName
-        formikDeposit.values.customerLastName = account.Client.lastName
+        formikDeposit.values.cardNumber = cardNumber
+        formikDeposit.values.customerFirstName = data.Account.Client.firstName
+        formikDeposit.values.customerLastName = data.Account.Client.lastName
         setCanDeposit(true);
         resetForm();
       }
@@ -135,11 +134,11 @@ const DepositarCuenta = () => {
     }
   }
   
-  const depositarCuenta = async ({ accountNumber, amountDeposit}, resetForm) => {
+  const depositarCuenta = async ({ cardNumber, amountDeposit}, resetForm) => {
     const { developURL } = service
     const token = localStorage.getItem('t')
-    const data = { id:accountNumber, amountDeposit}
-    const url = `${developURL}/accounts/deposit`
+    const data = { cardNumber, amount:amountDeposit, type:'Depositar'}
+    const url = `${developURL}/transactions`
     const fetchConfig = {
         method: 'POST', 
         headers: { 'Content-Type': 'application/json', 'Authorization': token} ,
@@ -162,11 +161,11 @@ const DepositarCuenta = () => {
     }
     setCanDeposit(false)
     resetForm()
-    formikFindAccount.values.accountNumber = ''
+    formikFindAccount.values.cardNumber = ''
   }
 
   const handleChangeAccount = (event) => {
-    formikFindAccount.values.accountNumber = event.target.value
+    formikFindAccount.values.cardNumber = event.target.value
     setCanDeposit(false);
   };
 
@@ -187,14 +186,14 @@ const DepositarCuenta = () => {
             </Typography>
             <TextField
               fullWidth
-              id='accountNumber'
-              name='accountNumber'
-              label='Número de Cuenta'
+              id='cardNumber'
+              name='cardNumber'
+              label='Número de Tarjeta'
               className={classes.marginTextField}
-              value={formikDeposit.values.accountNumber}
+              value={formikDeposit.values.cardNumber}
               onChange={handleChangeAccount}
-              error={formikDeposit.touched.accountNumber && Boolean(formikDeposit.errors.accountNumber)}
-              helperText={formikDeposit.touched.accountNumber && formikDeposit.errors.accountNumber}
+              error={formikDeposit.touched.cardNumber && Boolean(formikDeposit.errors.cardNumber)}
+              helperText={formikDeposit.touched.cardNumber && formikDeposit.errors.cardNumber}
               disabled={showSpinner}
             />
             <Grid container>
@@ -271,14 +270,14 @@ const DepositarCuenta = () => {
             </Typography>
             <TextField
               fullWidth
-              id='accountNumber'
-              name='accountNumber'
-              label='Número de Cuenta'
+              id='cardNumber'
+              name='cardNumber'
+              label='Número de Tarjeta'
               className={classes.marginTextField}
-              value={formikFindAccount.values.accountNumber}
+              value={formikFindAccount.values.cardNumber}
               onChange={formikFindAccount.handleChange}
-              error={formikFindAccount.touched.accountNumber && Boolean(formikFindAccount.errors.accountNumber)}
-              helperText={formikFindAccount.touched.accountNumber && formikFindAccount.errors.accountNumber}
+              error={formikFindAccount.touched.cardNumber && Boolean(formikFindAccount.errors.cardNumber)}
+              helperText={formikFindAccount.touched.cardNumber && formikFindAccount.errors.cardNumber}
               disabled={showSpinner}
             />
             <Button color="primary" 

@@ -7,7 +7,7 @@ import Home from '../components/ejecutivo/Home'
 import LayoutEjecutivo from '../components/ejecutivo/LayoutEjecutivo'
 import Credito from '../components/ejecutivo/Credito'
 
-const EjecutivoRoutes = ({setLoginSuccess, setRole}) => {
+const EjecutivoRoutes = ({ setLoginSuccess, setRole }) => {
   return (
      <BrowserRouter>
      <Routes>
@@ -24,4 +24,4 @@ const EjecutivoRoutes = ({setLoginSuccess, setRole}) => {
   )
 }
 
-export default EjecutivoRoutes
+export default EjecutivoRoutes;
