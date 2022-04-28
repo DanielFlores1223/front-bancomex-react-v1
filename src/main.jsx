@@ -5,9 +5,9 @@ import './index.css'
 import Slide from '@material-ui/core/Slide';
 import { SnackbarProvider } from 'notistack';
 
-
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
+
     <SnackbarProvider
     anchorOrigin={{
         vertical: 'top',
@@ -18,5 +18,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 >
     <App />
     </SnackbarProvider>
+
   </React.StrictMode>
 )

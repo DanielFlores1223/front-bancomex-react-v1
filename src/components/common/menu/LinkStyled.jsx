@@ -8,19 +8,19 @@ export const LinkStyled = styled(Link)`
   justify-content: flex-start;
   align-items: center;
   text-decoration: none;
-  color: #95A5A6;
-  font-size: 14px;
+  color: rgba(0, 0, 0, 0.87);
+  font-size: .9rem;
   height: 40px;
-  margin: 0 0.5rem;
+  margin-left: 0.8rem;
 
   &:hover {
-          background-color: #8390A3;
+          background-color: #103160;
           color: white;
-          border-radius: 10px;
+          border-radius: 8px 0px 0px 8px;
      }
 
   & span {
-          margin-left: 0.8rem;
+          margin-left: 1rem;
       }
 
 `;
