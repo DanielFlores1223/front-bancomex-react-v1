@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import Spinner from "../common/spinner/Spinner";
+import { useLocation } from "react-router-dom";
 
 const validationSchema = Yup.object({
   firstName: Yup.string().required("*Campo requerido"),
@@ -33,31 +34,46 @@ const validationSchema = Yup.object({
     .required("*Campo requerido"),
 });
 
-const FormularioBeneficiario = ({ beneficiario, setBeneficiario, cliente }) => {
+const FormularioBeneficiario = ({
+  beneficiario,
+  setBeneficiario,
+  cliente,
+  setCliente,
+  setValue,
+}) => {
+
+
+  const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
-  
+
   const formik = useFormik({
     initialValues: {
-      firstName: "",
-      lastName: "",
-      birthDate: "",
-      email: "",
-      phone: "",
-      relation: "",
-      porcentage: "",
+      firstName: beneficiario.firstName,
+      lastName: beneficiario.lastName,
+      birthDate: beneficiario.birthDate,
+      email: beneficiario.email,
+      phone: beneficiario.phone,
+      relation: beneficiario.relation,
+      porcentage: beneficiario.porcentage,
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      crearBeneficiario(values);
-      setBeneficiario({...beneficiario,values});
+      crearCliente(values);
+      setBeneficiario({ ...beneficiario, values });
     },
   });
 
-  const crearBeneficiario = async (values) => {
+  const crearCliente = async (values) => {
     const { developURL } = service;
-    const data = { ...values };
+    const data = {
+      client: cliente,
+      account: {
+        type: location.state.type,
+      },
+      beneficiary: beneficiario,
+    };
     console.log(data);
-    const url = `${developURL}/beneficiaries`;
+    const url = `${developURL}/client`;
     const fetchConfig = {
       method: "POST",
       headers: {
@@ -70,6 +86,7 @@ const FormularioBeneficiario = ({ beneficiario, setBeneficiario, cliente }) => {
     try {
       const response = await fetch(url, fetchConfig);
       const jsonResponse = await response.json();
+      console.log(jsonResponse);
 
       if (jsonResponse.success) {
         enqueueSnackbar(
@@ -78,12 +95,38 @@ const FormularioBeneficiario = ({ beneficiario, setBeneficiario, cliente }) => {
             variant: "success",
           }
         );
+        setCliente({
+          firstName: "",
+          lastName: "",
+          gender: "",
+          street: "",
+          intNumber: "",
+          extNumber: "",
+          suburb: "",
+          zipcode: "",
+          city: "",
+          state: "",
+          phone: "",
+          curp: "",
+          rfc: "",
+          ine: "",
+          email: "",
+        });
+        setBeneficiario({
+          firstName: "",
+          lastName: "",
+          birthDate: "",
+          email: "",
+          phone: "",
+          relation: "",
+          porcentage: "",
+        });
+        setValue(0);
         return;
       }
-      enqueueSnackbar("Hubo un error al crear el cliente", {
+      enqueueSnackbar(jsonResponse.msg, {
         variant: "error",
       });
-      formik.resetForm();
     } catch (error) {
       enqueueSnackbar("Hubo un error al enviar la petición", {
         variant: "error",
@@ -92,14 +135,14 @@ const FormularioBeneficiario = ({ beneficiario, setBeneficiario, cliente }) => {
   };
 
   function enviarDatos(datos) {
-    setBeneficiario(datos)
+    setBeneficiario(datos);
     console.log(formik.values);
   }
 
-
   return (
     <Grid sx={{ mt: 2 }}>
-      <form onSubmit={(e) => {
+      <form
+        onSubmit={(e) => {
           e.preventDefault();
           formik.handleSubmit();
         }}
@@ -153,7 +196,6 @@ const FormularioBeneficiario = ({ beneficiario, setBeneficiario, cliente }) => {
                   formik.touched.birthDate && Boolean(formik.errors.birthDate)
                 }
                 helperText={formik.touched.birthDate && formik.errors.birthDate}
-
               />
             </Stack>
           </Grid>
