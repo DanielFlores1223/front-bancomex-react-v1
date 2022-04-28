@@ -64,6 +64,9 @@ const styles = makeStyles((theme) => ({
   marginTextField: {
     marginBottom: "1rem",
   },
+  marginCard: {
+    margin: '1rem',
+  },
   marginDiv: {
     padding: "1rem 5rem",
     maxHeight: "100vh",

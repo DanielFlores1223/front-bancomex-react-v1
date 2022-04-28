@@ -1,10 +1,11 @@
-import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import TabsCuentas from "../components/ejecutivo/TabsCuentas";
-import CrearCuenta from "../components/ejecutivo/CrearCuenta";
-import FormularioBeneficiario from "../components/ejecutivo/FormularioBeneficiario";
-import Home from "../components/ejecutivo/Home";
-import LayoutEjecutivo from "../components/ejecutivo/LayoutEjecutivo";
+import React from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import CrearCliente from '../components/ejecutivo/CrearCliente'
+import CrearCuenta from '../components/ejecutivo/CrearCuenta'
+import FormularioBeneficiario from '../components/ejecutivo/FormularioBeneficiario'
+import Home from '../components/ejecutivo/Home'
+import LayoutEjecutivo from '../components/ejecutivo/LayoutEjecutivo'
+import Credito from '../components/ejecutivo/Credito'
 
 const EjecutivoRoutes = ({ setLoginSuccess, setRole }) => {
   return (
