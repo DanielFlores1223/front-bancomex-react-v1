@@ -5,12 +5,23 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import Typography from '@mui/material/Typography';
+import { red } from '@mui/material/colors';
+import { createTheme } from '@mui/system';
+import { CardMedia } from '@mui/material';
+
+
+const theme = createTheme({
+
+
+});
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
   padding: theme.spacing(1),
   textAlign: 'center',
   color: theme.palette.text.secondary,
+  back
+  
 }));
 
 const Home = () => {
@@ -31,7 +42,7 @@ const Home = () => {
       headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('t')} ,
 
     }
-    console.log('f')
+  
     try{
       const response = await fetch(url, fetchConfig);
       const jsonResponse = await response.json();
@@ -145,32 +156,41 @@ console.log(jsonResponse);
 
 
   }, [])
-  const renderCard = (title, subTitle) =>(
+
+  
+  const renderCard = (title, subTitle, img) =>(
     <Card sx={{ display:'flex', alignItems: 'center',
-      justifyContent: 'center' , flexDirection:'column', height: 200 }}> 
-       <Typography sx={{ fontSize: 14  }} color="text.secondary" gutterBottom>
+      justifyContent: 'center' , flexDirection:'column', height: 300,maxWidth: 300 }}> 
+      <CardMedia
+      component="img"
+      height="340"
+      image={img}
+      alt="Paella dish"
+      />
+      
+       <Typography sx={{ fontSize: 20, marginTop:'20px' }} color="text.primary" gutterBottom>
              {title}
             </Typography>
-            <Typography variant="h5" component="div">
+            <Typography variant="h5" component="div" sx={{marginBottom:'20px'}}>
               {subTitle}
             </Typography>
         </Card>
       )
-
-
   return (
     <div>
        
     <h1>Home de Gerente</h1>
     <Grid container spacing={3}>
     <Grid item xs={4}>
-    {renderCard('Total cuentas activas', `${resultAccounts}`)}
+      
+    {renderCard('Total cuentas activas', `${resultAccounts}`, 'https://res.cloudinary.com/cardiadev/image/upload/v1651160167/bancomex/cuentas_activas_hpiez5.jpg')}
     </Grid>
     <Grid item xs={4}>
-    {renderCard('Total creditos otorgados', `${resultCredits}`)}
+
+    {renderCard('Total creditos otorgados', `${resultCredits}`, 'https://res.cloudinary.com/cardiadev/image/upload/v1651160166/bancomex/creditos_aprobado_hvm5lg.jpg')}
     </Grid>
     <Grid item xs={4}>
-    {renderCard('Monto total del banco', `${resultAmount} MXN`)}
+    {renderCard('Monto total del banco', `${resultAmount} MXN`, 'https://res.cloudinary.com/cardiadev/image/upload/v1651160167/bancomex/monto_total_banco_eodh0o.jpg')}
     </Grid>
   </Grid>   
       </div>
