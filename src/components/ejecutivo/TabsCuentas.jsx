@@ -9,8 +9,33 @@ const TabsCuentas = () => {
   const location = useLocation();
   
   const [value, setValue] = useState(0);
-  const [valuesCliente, setCliente] = useState({});
-  const [valuesBeneficiario, setBeneficiario] = useState({});
+  const [cliente, setCliente] = useState({
+      firstName: "",
+      lastName: "",
+      gender: "",
+      street: "",
+      intNumber: "",
+      extNumber: "",
+      suburb: "",
+      zipcode: "",
+      city: "",
+      state: "",
+      phone: "",
+      curp: "",
+      rfc: "",
+      ine: "",
+      email: "",
+  });
+
+  const [beneficiario, setBeneficiario] = useState({
+      firstName: "",
+      lastName: "",
+      birthDate: "",
+      email: "",
+      phone: "",
+      relation: "",
+      porcentage: "",
+  });
   
   console.log(location)
   
@@ -34,10 +59,10 @@ const TabsCuentas = () => {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <CrearCliente setValue={setValue} value={value} setCliente={setCliente} valuesCliente={valuesCliente}/>
+        <CrearCliente setValue={setValue} value={value} setCliente={setCliente} cliente={cliente}/>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <FormularioBeneficiario valuesBeneficiario={valuesBeneficiario} setBeneficiario={setBeneficiario} />
+        <FormularioBeneficiario beneficiario={beneficiario} setBeneficiario={setBeneficiario} cliente={cliente} />
       </TabPanel>
     </Box>
   );

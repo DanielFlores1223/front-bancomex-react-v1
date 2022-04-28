@@ -48,72 +48,38 @@ const generos = [
   },
 ];
 
-const CrearCliente = ({setValue, valuesCliente, setCliente}) => {
+const CrearCliente = ({setValue, cliente, setCliente}) => {
   // Notistick - Notificaciones
   const { enqueueSnackbar } = useSnackbar();
   
   const formik = useFormik({
     initialValues: {
-      firstName: "",
-      lastName: "",
-      gender: "",
-      street: "",
-      intNumber: "",
-      extNumber: "",
-      suburb: "",
-      zipcode: "",
-      city: "",
-      state: "",
-      phone: "",
-      curp: "",
-      rfc: "",
-      ine: "",
-      email: "",
+      firstName: cliente.firstName,
+      lastName: cliente.lastName,
+      gender: cliente.gender,
+      street: cliente.street,
+      intNumber: cliente.intNumber,
+      extNumber: cliente.extNumber,
+      suburb: cliente.suburb,
+      zipcode: cliente.zipcode,
+      city: cliente.city,
+      state: cliente.state,
+      phone: cliente.phone,
+      curp: cliente.curp,
+      rfc: cliente.rfc,
+      ine: cliente.ine,
+      email: cliente.email,
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      crearCliente(values);
-      setCliente({...valuesCliente,values})
+      /* crearCliente(values); */
+      setCliente({...cliente,values})
+      console.log()
     },
   });
   
-  const crearCliente = async (values) => {
-    const { developURL } = service;
-    const data = { ...values };
-    console.log(data);
-    const url = `${developURL}/client`;
-    const fetchConfig = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: localStorage.getItem("t"),
-      },
-      body: JSON.stringify(data),
-    };
-    
-    try {
-      const response = await fetch(url, fetchConfig);
-      const jsonResponse = await response.json();
-      
-      if (jsonResponse.success) {
-        enqueueSnackbar("Se ha creado el cliente satisfactoriamente", {
-          variant: "success",
-        });
-        
-        return;
-      }
-      enqueueSnackbar("Hubo un error al crear el cliente", {
-        variant: "error",
-      });
-    } catch (error) {
-      enqueueSnackbar("Hubo un error al enviar la petición", {
-        variant: "error",
-      });
-    }
-  };
-  
   function enviarDatos(datos) {
-    setValue(1);
+  setValue(1);
     setCliente(datos)
     console.log(formik.values);
   }
@@ -136,7 +102,7 @@ const CrearCliente = ({setValue, valuesCliente, setCliente}) => {
               id="firstName"
               name="firstName"
               label="Nombres"
-              value={valuesCliente.firstName}
+              value={formik.values.firstName}
               onChange={formik.handleChange}
               error={
                 formik.touched.firstName && Boolean(formik.errors.firstName)
@@ -151,7 +117,7 @@ const CrearCliente = ({setValue, valuesCliente, setCliente}) => {
               id="lastName"
               name="lastName"
               label="Apellidos"
-              value={valuesCliente.lastName}
+              value={formik.values.lastName}
               onChange={formik.handleChange}
               error={formik.touched.lastName && Boolean(formik.errors.lastName)}
               helperText={formik.touched.lastName && formik.errors.lastName}
@@ -165,7 +131,7 @@ const CrearCliente = ({setValue, valuesCliente, setCliente}) => {
                 id="gender"
                 name="gender"
                 label="Género"
-                value={valuesCliente.gender}
+                value={formik.values.gender}
                 onChange={formik.handleChange}
                 error={formik.touched.gender && Boolean(formik.errors.gender)}
               >
@@ -185,7 +151,7 @@ const CrearCliente = ({setValue, valuesCliente, setCliente}) => {
               id="street"
               name="street"
               label="Domicilio"
-              value={valuesCliente.street}
+              value={formik.values.street}
               onChange={formik.handleChange}
               error={formik.touched.street && Boolean(formik.errors.street)}
               helperText={formik.touched.street && formik.errors.street}
@@ -199,7 +165,7 @@ const CrearCliente = ({setValue, valuesCliente, setCliente}) => {
               id="extNumber"
               name="extNumber"
               label="No. exterior"
-              value={valuesCliente.extNumber}
+              value={formik.values.extNumber}
               onChange={formik.handleChange}
               error={
                 formik.touched.extNumber && Boolean(formik.errors.extNumber)
@@ -214,7 +180,7 @@ const CrearCliente = ({setValue, valuesCliente, setCliente}) => {
               id="intNumber"
               name="intNumber"
               label="No. interior"
-              value={valuesCliente.intNumber}
+              value={formik.values.intNumber}
               onChange={formik.handleChange}
               error={
                 formik.touched.intNumber && Boolean(formik.errors.intNumber)
@@ -230,7 +196,7 @@ const CrearCliente = ({setValue, valuesCliente, setCliente}) => {
               id="suburb"
               name="suburb"
               label="Colonia"
-              value={valuesCliente.suburb}
+              value={formik.values.suburb}
               onChange={formik.handleChange}
               error={formik.touched.suburb && Boolean(formik.errors.suburb)}
               helperText={formik.touched.suburb && formik.errors.suburb}
@@ -243,7 +209,7 @@ const CrearCliente = ({setValue, valuesCliente, setCliente}) => {
               id="zipcode"
               name="zipcode"
               label="C.P"
-              value={valuesCliente.zipcode}
+              value={formik.values.zipcode}
               onChange={formik.handleChange}
               error={formik.touched.zipcode && Boolean(formik.errors.zipcode)}
               helperText={formik.touched.zipcode && formik.errors.zipcode}
@@ -256,7 +222,7 @@ const CrearCliente = ({setValue, valuesCliente, setCliente}) => {
               id="city"
               name="city"
               label="Ciudad"
-              value={valuesCliente.city}
+              value={formik.values.city}
               onChange={formik.handleChange}
               error={formik.touched.city && Boolean(formik.errors.city)}
               helperText={formik.touched.city && formik.errors.city}
@@ -269,7 +235,7 @@ const CrearCliente = ({setValue, valuesCliente, setCliente}) => {
               id="state"
               name="state"
               label="Estado"
-              value={valuesCliente.state}
+              value={formik.values.state}
               onChange={formik.handleChange}
               error={formik.touched.state && Boolean(formik.errors.state)}
               helperText={formik.touched.state && formik.errors.state}
@@ -283,7 +249,7 @@ const CrearCliente = ({setValue, valuesCliente, setCliente}) => {
               id="email"
               name="email"
               label="Correo electrónico"
-              value={valuesCliente.email}
+              value={formik.values.email}
               onChange={formik.handleChange}
               error={formik.touched.email && Boolean(formik.errors.email)}
               helperText={formik.touched.email && formik.errors.email}
@@ -296,7 +262,7 @@ const CrearCliente = ({setValue, valuesCliente, setCliente}) => {
               id="phone"
               name="phone"
               label="Celular"
-              value={valuesCliente.phone}
+              value={formik.values.phone}
               onChange={formik.handleChange}
               error={formik.touched.phone && Boolean(formik.errors.phone)}
               helperText={formik.touched.phone && formik.errors.phone}
@@ -310,7 +276,7 @@ const CrearCliente = ({setValue, valuesCliente, setCliente}) => {
               id="rfc"
               name="rfc"
               label="RFC"
-              value={valuesCliente.rfc}
+              value={formik.values.rfc}
               onChange={formik.handleChange}
               error={formik.touched.rfc && Boolean(formik.errors.rfc)}
               helperText={formik.touched.rfc && formik.errors.rfc}
@@ -324,7 +290,7 @@ const CrearCliente = ({setValue, valuesCliente, setCliente}) => {
               id="curp"
               name="curp"
               label="CURP"
-              value={valuesCliente.curp}
+              value={formik.values.curp}
               onChange={formik.handleChange}
               error={formik.touched.curp && Boolean(formik.errors.curp)}
               helperText={formik.touched.curp && formik.errors.curp}
@@ -338,7 +304,7 @@ const CrearCliente = ({setValue, valuesCliente, setCliente}) => {
               id="ine"
               name="ine"
               label="INE"
-              value={valuesCliente.ine}
+              value={formik.values.ine}
               onChange={formik.handleChange}
               error={formik.touched.ine && Boolean(formik.errors.ine)}
               helperText={formik.touched.ine && formik.errors.ine}

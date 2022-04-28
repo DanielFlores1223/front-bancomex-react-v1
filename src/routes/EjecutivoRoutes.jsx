@@ -6,6 +6,7 @@ import FormularioBeneficiario from '../components/ejecutivo/FormularioBeneficiar
 import Home from '../components/ejecutivo/Home'
 import LayoutEjecutivo from '../components/ejecutivo/LayoutEjecutivo'
 import Credito from '../components/ejecutivo/Credito'
+import TabsCuentas from '../components/ejecutivo/TabsCuentas'
 
 const EjecutivoRoutes = ({ setLoginSuccess, setRole }) => {
   return (

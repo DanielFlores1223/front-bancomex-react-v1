@@ -33,14 +33,9 @@ const validationSchema = Yup.object({
     .required("*Campo requerido"),
 });
 
-const FormularioBeneficiario = ({ valuesBeneficiario, setBeneficiario }) => {
+const FormularioBeneficiario = ({ beneficiario, setBeneficiario, cliente }) => {
   const { enqueueSnackbar } = useSnackbar();
-
-  const [errorExist, setErrorExist] = useState(false);
-  const [msgError, setMsgError] = useState("");
-  const [clear, setClear] = useState(false);
-  const [showSpinner, setShowSpinner] = useState(false);
-
+  
   const formik = useFormik({
     initialValues: {
       firstName: "",
@@ -54,7 +49,7 @@ const FormularioBeneficiario = ({ valuesBeneficiario, setBeneficiario }) => {
     validationSchema: validationSchema,
     onSubmit: (values) => {
       crearBeneficiario(values);
-      setBeneficiario({...valuesBeneficiario,values});
+      setBeneficiario({...beneficiario,values});
     },
   });
 
