@@ -9,9 +9,12 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
+import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import service from "../../service";
+import * as Yup from "yup";
+import RegExpression from "../common/functions/RestringE";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -29,47 +32,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const validationSchema = Yup.object({
+  firstName: Yup.string()
+    .required("El nombre es obligatorio")
+    .matches(RegExpression, "Ingrese un nombre valido"),
+  lastName: Yup.string()
+    .required("El apellido es obligatorio")
+    .matches(RegExpression, "Ingrese un apellido valido"),
+  role: Yup.string().required("El rol es obligatorio"),
+  BusinessUnitId: Yup.number(),
+});
+
 const ActualizaEmplado = () => {
   const classes = useStyles();
-
+  const navigateTo = useNavigate();
   const [firstName, setFirstName] = useState("");
+  const [showSpinner, setShowSpinner] = useState(false);
   const [lastName, setLastName] = useState("");
   const [role, setRole] = useState("");
   const [status, setStatus] = useState("");
+  const [area, setArea] = useState([]);
+  const [areas, setAreas] = useState([]);
 
   const { id } = useParams();
 
-  //   const getEmployee = async () => {
-  //     const { developURL } = service;
-  //     const url = `${developURL}/employees/`+id;
-  //     const fetchConfig = {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: localStorage.getItem("t"),
-  //       },
-  //       body: JSON.stringify(),
-  //     };
-
-  //     const response = await fetch(url, fetchConfig);
-  //     let json = await response.json();
-  //     let datos = json.result;
-  //         (json) => {
-  //             setFname(json.result[0].firstName)
-  //             setLname(result.user.lname)
-  //             setUsername(result.user.username)
-  //             setEmail(result.user.email)
-  //             setAvatar(result.user.avatar)
-  //         }
-  //         console.log(firstName);
-
-  //   };
-
-  //   useEffect(() => {
-  //     getEmployee();
-  //   }, []);
-
-  useEffect(() => {
+  const getEmployee = async () => {
     const { developURL } = service;
     const url = `${developURL}/employees/` + id;
     const fetchConfig = {
@@ -81,51 +68,90 @@ const ActualizaEmplado = () => {
       body: JSON.stringify(),
     };
 
-    fetch(url, fetchConfig)
-      .then((res) => res.json())
-      .then((result) => {
-        setFirstName(result.result[0].firstName);
-        setLastName(result.result[0].lastName);
-        setRole(result.result[0].role);
-        setStatus(result.result[0].status);
-      });
-  }, [id]);
+    const response = await fetch(url, fetchConfig);
+    const json = await response.json();
+    formik.values.firstName = json.result[0].firstName;
+    formik.values.lastName = json.result[0].lastName;
+    formik.values.role = json.result[0].role;
+    formik.values.status = json.result[0].status;
+    formik.values.BusinessUnitId = json.result[0].BusinessUnit.id;
+    setFirstName(json.result[0].firstName);
+    setLastName(json.result[0].lastName);
+    setRole(json.result[0].role);
+    setStatus(json.result[0].status);
+    setArea(json.result[0].BusinessUnit.name);
+  };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const getBU = async () => {
+    const { developURL } = service;
+    const url = `${developURL}/businessunits`;
+    const fetchConfig = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("t"),
+      },
+    };
+
+    setShowSpinner(true);
+    const response = await fetch(url, fetchConfig);
+    const jsonResponse = await response.json();
+    setAreas(jsonResponse.result);
+
+    setShowSpinner(false);
+  };
+
+  useEffect(() => {
+    getEmployee();
+    getBU();
+  }, []);
+
+  const formik = useFormik({
+    initialValues: {
+      firstName: "",
+      lastName: "",
+      role: "",
+      status: "",
+      BusinessUnitId: "",
+    },
+
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      UpdateEmpleados(values);
+    },
+  });
+
+  const UpdateEmpleados = async ({
+    firstName,
+    lastName,
+    role,
+    status,
+    BusinessUnitId,
+  }) => {
     let data = {
-        'firstName': firstName,
-        'lastName': lastName,
-        'role': role,
-        'status': status,
-    }
-    // const { developURL } = service;
-    // const url = `${developURL}/employees/:id`;
-    // const fetchConfig = {
-    //   method: "PUT",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     Authorization: localStorage.getItem("t"),
-    //   },
-    fetch('http://localhost:4000/api/v1/employees/'+id, {
-      method: 'PUT',
+      firstName,
+      lastName,
+      role,
+      status,
+      BusinessUnitId,
+    };
+
+    fetch("http://localhost:4000/api/v1/employees/" + id, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: localStorage.getItem("t"),
       },
       body: JSON.stringify(data),
     })
-    .then(res => res.json())
-    .then(
-        (result) =>{
-            alert(['Empleado Actualizado con éxito'])
-            if(result.result[0].status === 'true'){
-                window.location.href = '/empleados'
-            }
+      .then((res) => res.json())
+      .then((result) => {
+        alert(["Empleado Actualizado con éxito"]);
+        if (result.success === true) {
+          navigateTo("/empleados");
         }
-    )  
-    
-
+      })
+      .catch((error) => console.log(error));
   };
 
   return (
@@ -134,99 +160,94 @@ const ActualizaEmplado = () => {
         <Typography component="h1" variant="h5">
           Empleado
         </Typography>
-        <form className={classes.form} onSubmit={handleSubmit}>
+        <form className={classes.form} onSubmit={formik.handleSubmit}>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <TextField
-                autoComplete="fname"
                 variant="outlined"
-                required
                 fullWidth
+                error={
+                  formik.touched.firstName && Boolean(formik.errors.firstName)
+                }
+                helperText={formik.touched.firstName && formik.errors.firstName}
                 id="firstName"
                 label="Nombre"
-                value={firstName}
+                name="firstName"
+                value={formik.values.firstName}
                 autoFocus
-                onChange={(e) => setFirstName(e.target.value)}
+                onChange={formik.handleChange}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <TextField
                 variant="outlined"
                 required
                 fullWidth
+                error={
+                  formik.touched.lastName && Boolean(formik.errors.lastName)
+                }
+                helperText={formik.touched.lastName && formik.errors.lastName}
                 id="lastName"
-                value={lastName}
+                name="lastName"
+                value={formik.values.lastName}
                 label="Apellido"
-                onChange={(e) => setLastName(e.target.value)}
+                onChange={formik.handleChange}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              {/* <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="role"
-                value={role}
-                label="Rol"
-              /> */}
+            <Grid item xs={12} sm={4}>
               <InputLabel id="demo-simple-select-label">Rol</InputLabel>
               <Select
-              fullWidth
-              variant="outlined"
+                fullWidth
+                variant="outlined"
                 labelId="demo-simple-select-label"
                 id="role"
-                onChange={(e) => setRole(e.target.value)}
-                value={role}
+                name="role"
+                onChange={formik.handleChange}
+                value={formik.values.role}
               >
-                <MenuItem value='Cajero'>Cajero</MenuItem>
-                <MenuItem value='Ejecutivo'>Ejecutivo</MenuItem>
-                <MenuItem value='Gerente'>Gerente</MenuItem>
+                <MenuItem value="Cajero">Cajero</MenuItem>
+                <MenuItem value="Ejecutivo">Ejecutivo</MenuItem>
+                <MenuItem value="Gerente">Gerente</MenuItem>
               </Select>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              {/* <TextField
-                        variant="outlined"
-                        required
-                        fullWidth
-                        id='role'
-                        value={role}
-                        label='Estado'
-                        /> */}
+            <Grid item xs={12} sm={4}>
               <InputLabel id="demo-simple-select-label">Estado</InputLabel>
               <Select
-              fullWidth
-              variant="outlined"
+                fullWidth
+                variant="outlined"
                 labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
+                id="status"
+                name="status"
+                value={formik.values.status}
+                onChange={formik.handleChange}
               >
-                <MenuItem value='activo'>Activo</MenuItem>
-                <MenuItem value='inactivo'>Inactivo</MenuItem>
+                <MenuItem value="true">Activo</MenuItem>
+                <MenuItem value="false">Inactivo</MenuItem>
               </Select>
             </Grid>
-            {/* <Grid item xs={12} sm={4}> */}
-              {/* <TextField
-                        variant="outlined"
-                        required
-                        fullWidth
-                        id='role'
-                        value={role}
-                        label='Estado'
-                        /> */}
-              {/* <InputLabel id="demo-simple-select-label">Area</InputLabel>
+            <Grid item xs={12} sm={4}>
+              <InputLabel id="BusinessUnitId">Área</InputLabel>
               <Select
-              variant="outlined"
-              fullWidth
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={status}
+                labelId="BusinessUnitId"
+                id="BusinessUnitId"
+                name="BusinessUnitId"
+                fullWidth
+                variant="outlined"
+                value={formik.values.BusinessUnitId}
+                label="Area"
+                onChange={formik.handleChange}
               >
-                <MenuItem value='activo'>Activo</MenuItem>
-                <MenuItem value='inactivo'>Inactivo</MenuItem>
+                {areas &&
+                  areas.length > 0 &&
+                  areas.map((a) => {
+                    return (
+                      <MenuItem key={a.id} value={a.id}>
+                        {a.name}
+                      </MenuItem>
+                    );
+                  })}
               </Select>
-            </Grid> */}
-            
+            </Grid>
           </Grid>
           <Button
             type="submit"
