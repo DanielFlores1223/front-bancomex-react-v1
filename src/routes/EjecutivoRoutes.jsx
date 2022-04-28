@@ -6,22 +6,29 @@ import FormularioBeneficiario from '../components/ejecutivo/FormularioBeneficiar
 import Home from '../components/ejecutivo/Home'
 import LayoutEjecutivo from '../components/ejecutivo/LayoutEjecutivo'
 import Credito from '../components/ejecutivo/Credito'
+import TabsCuentas from '../components/ejecutivo/TabsCuentas'
 
 const EjecutivoRoutes = ({ setLoginSuccess, setRole }) => {
   return (
-     <BrowserRouter>
-     <Routes>
-         <Route path='/' element={<LayoutEjecutivo setLoginSuccess={setLoginSuccess} 
-                                                setRole={setRole}/>}>
-             <Route index element={<Home />} />
-             <Route path='crear-cliente' element={<CrearCliente />} />
-             <Route path="formulario-beneficiario" element={<FormularioBeneficiario />}/>
-             <Route path="crear-cuenta" element={<CrearCuenta />}/>
-             <Route path="credito" element={<Credito />}/>
-         </Route>
-     </Routes>
-  </BrowserRouter>
-  )
-}
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <LayoutEjecutivo
+              setLoginSuccess={setLoginSuccess}
+              setRole={setRole}
+            />
+          }
+        >
+          <Route index element={<Home />} />
+          <Route path="crear-cuenta" element={<CrearCuenta />} />
+          <Route path="crear-cliente/debito" element={<TabsCuentas />} />
+          <Route path="crear-cliente" element={<TabsCuentas />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+};
 
 export default EjecutivoRoutes;

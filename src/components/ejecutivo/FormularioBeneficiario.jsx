@@ -4,6 +4,7 @@ import { useState } from "react";
 import service from "../../service";
 import * as Yup from "yup";
 import "yup-phone-lite";
+import { useSnackbar } from "notistack";
 import {
   Button,
   TextField,
@@ -14,49 +15,65 @@ import {
 } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import Spinner from "../common/spinner/Spinner";
-
-
-
-
-
+import { useLocation } from "react-router-dom";
 
 const validationSchema = Yup.object({
   firstName: Yup.string().required("*Campo requerido"),
   lastName: Yup.string().required("*Campo requerido"),
   birthDate: Yup.date().required("*Campo requerido"),
-  email: Yup.string().email("*Debe ser un email valido").required("*Campo requerido"),
-  phone: Yup.string().phone("MX", "Ingresa un teléfono valido").required("*Campo requerido"),
+  email: Yup.string()
+    .email("*Debe ser un email valido")
+    .required("*Campo requerido"),
+  phone: Yup.string()
+    .phone("MX", "Ingresa un teléfono valido")
+    .required("*Campo requerido"),
   relation: Yup.string().required("*Campo requerido"),
-  porcentage: Yup.number().min(1, "*Debe de ser mayor a 1").max(100, "*Debe de ser menor a 100").required("*Campo requerido"),
+  porcentage: Yup.number()
+    .min(1, "*Debe de ser mayor a 1")
+    .max(100, "*Debe de ser menor a 100")
+    .required("*Campo requerido"),
 });
 
-const FormularioBeneficiario = () => {
-  const [errorExist, setErrorExist] = useState(false);
-  const [msgError, setMsgError] = useState("");
-  const [clear, setClear] = useState(false);
-  const [showSpinner, setShowSpinner] = useState(false);
+const FormularioBeneficiario = ({
+  beneficiario,
+  setBeneficiario,
+  cliente,
+  setCliente,
+  setValue,
+}) => {
+
+
+  const location = useLocation();
+  const { enqueueSnackbar } = useSnackbar();
 
   const formik = useFormik({
     initialValues: {
-      firstName: "",
-      lastName: "",
-      birthDate: "",
-      email: "",
-      phone: "",
-      relation: "",
-      porcentage: "",
+      firstName: beneficiario.firstName,
+      lastName: beneficiario.lastName,
+      birthDate: beneficiario.birthDate,
+      email: beneficiario.email,
+      phone: beneficiario.phone,
+      relation: beneficiario.relation,
+      porcentage: beneficiario.porcentage,
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      crearBeneficiario(values);
+      crearCliente(values);
+      setBeneficiario({ ...beneficiario, values });
     },
   });
 
-  const crearBeneficiario = async (values) => {
+  const crearCliente = async (values) => {
     const { developURL } = service;
-    const data = { ...values };
+    const data = {
+      client: cliente,
+      account: {
+        type: location.state.type,
+      },
+      beneficiary: beneficiario,
+    };
     console.log(data);
-    const url = `${developURL}/beneficiaries`;
+    const url = `${developURL}/client`;
     const fetchConfig = {
       method: "POST",
       headers: {
@@ -67,36 +84,60 @@ const FormularioBeneficiario = () => {
     };
 
     try {
-      setShowSpinner(true);
       const response = await fetch(url, fetchConfig);
       const jsonResponse = await response.json();
       console.log(jsonResponse);
-      setShowSpinner(false);
 
-      if (!jsonResponse.success) {
-        setErrorExist(true);
-
-        setTimeout(() => {
-          setErrorExist(false);
-          setMsgError("");
-        }, 4000);
+      if (jsonResponse.success) {
+        enqueueSnackbar(
+          "Se ha creado el cliente con su beneficiario satisfactoriamente",
+          {
+            variant: "success",
+          }
+        );
+        setCliente({
+          firstName: "",
+          lastName: "",
+          gender: "",
+          street: "",
+          intNumber: "",
+          extNumber: "",
+          suburb: "",
+          zipcode: "",
+          city: "",
+          state: "",
+          phone: "",
+          curp: "",
+          rfc: "",
+          ine: "",
+          email: "",
+        });
+        setBeneficiario({
+          firstName: "",
+          lastName: "",
+          birthDate: "",
+          email: "",
+          phone: "",
+          relation: "",
+          porcentage: "",
+        });
+        setValue(0);
         return;
       }
-      formik.resetForm();
+      enqueueSnackbar(jsonResponse.msg, {
+        variant: "error",
+      });
     } catch (error) {
-      setShowSpinner(true);
-      console.log(error);
-      setTimeout(() => {
-        setErrorExist(true);
-        setMsgError("Beneficiario no creado");
-      }, 2000);
-
-      setTimeout(() => {
-        setErrorExist(false);
-        setMsgError("EDITAR");
-      }, 4000);
+      enqueueSnackbar("Hubo un error al enviar la petición", {
+        variant: "error",
+      });
     }
   };
+
+  function enviarDatos(datos) {
+    setBeneficiario(datos);
+    console.log(formik.values);
+  }
 
   return (
     <Grid sx={{ mt: 2 }}>
@@ -107,12 +148,6 @@ const FormularioBeneficiario = () => {
         }}
       >
         <Grid container spacing={3}>
-          {errorExist && (
-            <Alert severity="error" fullWidth>
-              {" "}
-              {msgError}{" "}
-            </Alert>
-          )}
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
@@ -126,7 +161,6 @@ const FormularioBeneficiario = () => {
                 formik.touched.firstName && Boolean(formik.errors.firstName)
               }
               helperText={formik.touched.firstName && formik.errors.firstName}
-              disabled={showSpinner}
             />
           </Grid>
 
@@ -141,12 +175,11 @@ const FormularioBeneficiario = () => {
               onChange={formik.handleChange}
               error={formik.touched.lastName && Boolean(formik.errors.lastName)}
               helperText={formik.touched.lastName && formik.errors.lastName}
-              disabled={showSpinner}
             />
           </Grid>
 
           <Grid item xs={12} sm={4}>
-            <Stack component="form" noValidate spacing={3}>
+            <Stack noValidate spacing={3}>
               <TextField
                 fullWidth
                 size="medium"
@@ -163,7 +196,6 @@ const FormularioBeneficiario = () => {
                   formik.touched.birthDate && Boolean(formik.errors.birthDate)
                 }
                 helperText={formik.touched.birthDate && formik.errors.birthDate}
-                disabled={showSpinner}
               />
             </Stack>
           </Grid>
@@ -179,7 +211,6 @@ const FormularioBeneficiario = () => {
               onChange={formik.handleChange}
               error={formik.touched.relation && Boolean(formik.errors.relation)}
               helperText={formik.touched.relation && formik.errors.relation}
-              disabled={showSpinner}
             />
           </Grid>
 
@@ -196,7 +227,6 @@ const FormularioBeneficiario = () => {
                 formik.touched.porcentage && Boolean(formik.errors.porcentage)
               }
               helperText={formik.touched.porcentage && formik.errors.porcentage}
-              disabled={showSpinner}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -210,7 +240,6 @@ const FormularioBeneficiario = () => {
               onChange={formik.handleChange}
               error={formik.touched.email && Boolean(formik.errors.email)}
               helperText={formik.touched.email && formik.errors.email}
-              disabled={showSpinner}
             />
           </Grid>
 
@@ -225,7 +254,6 @@ const FormularioBeneficiario = () => {
               onChange={formik.handleChange}
               error={formik.touched.phone && Boolean(formik.errors.phone)}
               helperText={formik.touched.phone && formik.errors.phone}
-              disabled={showSpinner}
             />
           </Grid>
 
@@ -237,13 +265,10 @@ const FormularioBeneficiario = () => {
               type="submit"
               size="large"
               sx={{ mt: 3 }}
-              onClick={() => {
-                setClear(true);
-              }}
+              onClick={() => enviarDatos(formik.values)}
             >
               Registrar
             </Button>
-            {showSpinner && <Spinner />}
           </Grid>
         </Grid>
       </form>
