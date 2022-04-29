@@ -8,6 +8,8 @@ import ImgBill from '../../img/moneyBill.png'
 import ImgCoins from '../../img/coins.png'
 import service from '../../service';
 import Spinner from '../common/spinner/Spinner';
+import { jsPDF } from "jspdf"
+import 'jspdf-autotable'
 
 const styles = makeStyles((theme) => ({
      formBM: {
@@ -114,6 +116,14 @@ const HacerCorte = ({setLoginSuccess, setRole}) => {
    const navigateTo = useNavigate();
    const [showSpinner, setShowSpinner] = useState(false);
 
+   let dataPDF = {
+        employeeName: localStorage.name,
+        boxName: '',
+        startAmount: 0,
+        endAmount: 0,
+        dataMoney: {}
+   }
+
    const formik = useFormik({
      initialValues: {
           B1000:'',
@@ -161,6 +171,7 @@ const HacerCorte = ({setLoginSuccess, setRole}) => {
                     console.log(responseJSON)
                }
           
+               dataPDF.dataMoney = values
                await freeCashBox();     
 
                setShowSpinner(false);
@@ -171,10 +182,11 @@ const HacerCorte = ({setLoginSuccess, setRole}) => {
    }
 
    const freeCashBox = async() => {
-
+     console.log("freeCashBox")
      try {
           await changeSatateCashBox();
           await getCashInfo();
+          generatePDF();
           closeSession();
      } catch (error) {
           throw 'Error! in freeCashBox'
@@ -183,6 +195,7 @@ const HacerCorte = ({setLoginSuccess, setRole}) => {
    }
 
    const changeSatateCashBox = async () => {
+     console.log("changeSatateCashBox")
      try {
             
           const { developURL } = service;
@@ -209,6 +222,7 @@ const HacerCorte = ({setLoginSuccess, setRole}) => {
    }
 
    const getCashInfo = async () => {
+     console.log("getCashInfo")
      try {
        const { developURL } = service;
        const url = `${developURL}/cashcutoff/getAllInfo/${getCCBCOId()}`;
@@ -224,6 +238,7 @@ const HacerCorte = ({setLoginSuccess, setRole}) => {
         return false;
       }
       
+      dataPDF.boxName =  jsonResponse.result.CashBox.name //CashBox.name
       await updateCashCutOff(jsonResponse.result.totalStart);
 
       return true;
@@ -233,6 +248,7 @@ const HacerCorte = ({setLoginSuccess, setRole}) => {
    }
 
    const updateCashCutOff = async (startValue) =>{
+     console.log("updateCashCutOff")
      try {
           
           const d = Math.sign(totalEnd - startValue) === -1 ? (totalEnd - startValue) * -1 : (totalEnd - startValue)
@@ -252,7 +268,9 @@ const HacerCorte = ({setLoginSuccess, setRole}) => {
           if(!jsonResponse.success) {
             return false;
           }
-
+          
+          dataPDF.startAmount = startValue
+          dataPDF.endAmount = totalEnd
           return true;
         } catch (error) {
           throw 'Error! in updateCashCutOff()'
@@ -260,11 +278,104 @@ const HacerCorte = ({setLoginSuccess, setRole}) => {
    }
 
    const closeSession = () => {
+     console.log("closeSession")
     localStorage.clear();
     setLoginSuccess(false);
     setRole('');
     navigateTo('/');
   }
+
+  const generatePDF = () => {
+       
+     console.log("generatePDF")
+
+     console.clear()
+     
+     console.log(dataPDF)
+
+     const doc = new jsPDF("p", "in", "letter");
+     const date = new Date().toLocaleString()
+ 
+     doc.autoTable({
+       theme:'plain',
+       headStyles:{halign:'center', fillColor:'#103160', textColor:'#FFFFFF', fontSize:15},
+       bodyStyles:{ halign: 'right', cellWidth:'auto'},
+       head: [['Reporte']],
+       body:[[],[date]],
+     })
+ 
+     doc.autoTable({
+       theme:'grid',
+       headStyles:{fillColor:'#103160', textColor:'#FFFFFF'},
+       styles: { halign: 'left', cellWidth:'auto'},
+       head:[[{content: 'Datos generales', colSpan: 4}]],
+       body:[
+         ['Cajero:', dataPDF.employeeName,'Monto inicial:', "$ "+dataPDF.startAmount+" MNX"],
+         ['Caja:', dataPDF.boxName,'Monto final:', "$ "+dataPDF.endAmount+" MNX"]
+       ]
+     })
+ 
+     doc.autoTable({
+       theme:'plain',
+       head: [['Billetes']]
+     })
+     
+     let dataBilletes = []
+     let dataMonedas = []
+     let totalBilletes = 0
+     let totalMonedas = 0
+
+     for (const key in dataPDF.dataMoney){
+          try {
+               let denomination = key.slice(1)
+          const amount = dataPDF.dataMoney[key]
+
+          denomination = isNaN(denomination) ? (denomination.slice(0, -1) * 0.01) : denomination
+
+          const total = denomination * amount
+          
+          const row = ["$ "+denomination+" MNX", amount, "$ "+total+" MNX"]
+
+          if(key.charAt(0)==='B'){
+               dataBilletes.push(row)
+               totalBilletes+=total
+          }else if(key.charAt(0)==='M'){
+               dataMonedas.push(row) 
+               totalMonedas+=total
+          } 
+          } catch (error) {
+               console.log(error)
+          }
+     }
+
+     doc.autoTable({
+       headStyles:{fillColor:'#103160', textColor:'#FFFFFF'},
+       head: [['Denominación', 'Cantidad', 'Total']],
+       body: [
+          ...dataBilletes,
+          [{content: "TOTAL:", colSpan: 2, styles:{halign: 'right', fontStyle: 'bold'}}, {content: "$ "+totalBilletes+" MNX", styles:{fontStyle: 'bold'}}]
+          ]
+     })
+ 
+     doc.autoTable({
+       theme:'plain',
+       head: [['Monedas']]
+     })
+ 
+     doc.autoTable({
+       headStyles:{fillColor:'#103160', textColor:'#FFFFFF'},
+       head: [['Denominación', 'Cantidad', 'Total']],
+       body: [
+          ...dataMonedas,
+          [{content: "TOTAL:", colSpan: 2, styles:{halign: 'right', fontStyle: 'bold'}}, {content: "$ "+totalMonedas+" MNX", styles:{fontStyle: 'bold'}}]
+          ]
+     })
+ 
+     doc.setProperties({
+       title: `Reporte ${new Date().toDateString()}`
+     });
+     doc.output('pdfobjectnewwindow');
+   }
 
   //get total amount
    const { B1000, B500, B200, B100, B50, B20, M10, M5, M2, M1, M50C  } = formik.values;
