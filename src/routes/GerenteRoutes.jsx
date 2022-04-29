@@ -5,7 +5,9 @@ import CrearEmpleados from '../components/gerente/CrearEmpleados'
 import Cuentas from '../components/gerente/Cuentas'
 import Empleados from '../components/gerente/Empleados'
 import Home from '../components/gerente/Home'
+import InfoCredito from '../components/gerente/InfoCredito'
 import LayoutGerente from '../components/gerente/LayoutGerente'
+import ListaCreditos from '../components/gerente/ListaCreditos'
 
 const GerenteRoutes = ( {setLoginSuccess, setRole} ) => {
   return (
@@ -18,6 +20,8 @@ const GerenteRoutes = ( {setLoginSuccess, setRole} ) => {
                 <Route path = 'empleados' element = {<Empleados/>} />
                 <Route path = 'empleados/actualiza/:id' element= {<ActualizaEmplado/>} />
                 <Route path = 'cuentas' element = {<Cuentas />} />
+                <Route path = 'creditos' element = {<ListaCreditos />} />
+                <Route path = 'creditos/:id' element = {<InfoCredito />} />
             </Route>
       </Routes>
       </BrowserRouter>
