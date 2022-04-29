@@ -10,10 +10,10 @@ const validationSchema = Yup.object({
          .string()
          .required('*Este campo es obligatorio'),
      approvedAmount: Yup
-               .number()
-               .min(0, 'La cantidad debe ser mayor')
-               .integer('Solo se aceptan cantidades enteras')
-               .required('*Este campo es obligatorio')
+          .number()
+          .min(0, 'La cantidad debe ser mayor')
+          .integer('Solo se aceptan cantidades enteras')
+          .required('*Este campo es obligatorio')
  });
 
 const InfoCredito = () => {
@@ -27,7 +27,7 @@ const InfoCredito = () => {
      const formik = useFormik({
           initialValues: {
               status: '',
-              approvedAmount: ''
+              approvedAmount: '0'
               
           },
           validationSchema,
@@ -104,37 +104,41 @@ const InfoCredito = () => {
                          </>
                      )
                 }
-
-                <form onSubmit={formik.handleSubmit}>
-                    <InputLabel id="aprodenselect">Aprobar o Rechazar</InputLabel>
-                    <Select
-                      labelId="aprodenselect"
-                      id="status"
-                      name='status'
-                      value={formik.values.status}
-                      onChange={formik.handleChange}
-                      error={formik.touched.status && Boolean(formik.errors.status)}
-                    >
-                         <MenuItem value={'Aprobado'}>Aprobar</MenuItem>
-                         <MenuItem value={'Rechazado'}>Rechazar</MenuItem>
-                    </Select>
-                    <FormHelperText style={{color: 'red'}}>
-                              {formik.touched.status && formik.errors.status}
-                    </FormHelperText>
-                    <TextField 
-                         fullWidth
-                         id='approvedAmount'
-                         name='approvedAmount'
-                         label='Cantidad aprobada para el credito'
-                         value={formik.values.approvedAmount}
-                         onChange={formik.handleChange}
-                         error={formik.touched.approvedAmount && Boolean(formik.errors.approvedAmount)}
-                         helperText={formik.touched.approvedAmount && formik.errors.approvedAmount}
-                    />
-                    <Button type='submit' >
-                         Enviar
-                    </Button>
-                </form>
+               {
+                    credit.status === 'Pendiente' &&(
+                         <form onSubmit={formik.handleSubmit}>
+                             <InputLabel id="aprodenselect">Aprobar o Rechazar</InputLabel>
+                             <Select
+                               labelId="aprodenselect"
+                               id="status"
+                               name='status'
+                               value={formik.values.status}
+                               onChange={formik.handleChange}
+                               error={formik.touched.status && Boolean(formik.errors.status)}
+                             >
+                                  <MenuItem value={'Aprobado'}>Aprobar</MenuItem>
+                                  <MenuItem value={'Rechazado'}>Rechazar</MenuItem>
+                             </Select>
+                             <FormHelperText style={{color: 'red'}}>
+                                       {formik.touched.status && formik.errors.status}
+                             </FormHelperText>
+                             <TextField 
+                                  fullWidth
+                                  id='approvedAmount'
+                                  name='approvedAmount'
+                                  label='Cantidad aprobada para el credito'
+                                  value={formik.values.approvedAmount}
+                                  onChange={formik.handleChange}
+                                  error={formik.touched.approvedAmount && Boolean(formik.errors.approvedAmount)}
+                                  helperText={formik.touched.approvedAmount && formik.errors.approvedAmount}
+                             />
+                             <Button type='submit' >
+                                  Enviar
+                             </Button>
+                         </form>
+                    )
+               }
+                
             </Grid>
        </div>
      )

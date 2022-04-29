@@ -53,6 +53,7 @@ const ListaCreditos = () => {
                          <MenuItem value={'Todo'}>Todo</MenuItem>
                          <MenuItem value={'Aprobado'}>Aprobado</MenuItem>
                          <MenuItem value={'Rechazado'}>Rechazado</MenuItem>
+                         <MenuItem value={'Pendiente'}>Pendiente</MenuItem>
                     </Select>
                  </Grid>
                {
