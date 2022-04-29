@@ -73,6 +73,7 @@ const Empleados = () => {
     setPage(0);
   };
 
+  //Petición para obtener los registros de los empleados
   const getEmployees = async () => {
     const { developURL } = service;
     const url = `${developURL}/employees`;
@@ -87,7 +88,6 @@ const Empleados = () => {
 
     const response = await fetch(url, fetchConfig);
     const json = await response.json();
-    console.log(json.result[0].BusinessUnit.name);
     setEmployees(json.result);
   };
 
@@ -95,6 +95,7 @@ const Empleados = () => {
     getEmployees();
   }, []);
 
+  //Funcion que envia al componente de actualizar
   const EmpladoUpdate = (id) => {
     navigateTo("/empleados/actualiza/" + id);
   };
