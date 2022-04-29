@@ -39,8 +39,8 @@ const LayoutCajero = ({setLoginSuccess, setRole, setLinkDisabled, linkDisabled})
               {
                   !linkDisabled && (
                     <>
-                      <LinkStyled to="/depositar-cuenta"> <span> Depositar cuenta </span></LinkStyled>
-                      <LinkStyled to="/retirar-efectivo"> <span> Retirar efectivo </span></LinkStyled>
+                      <LinkStyled to="/depositar-cuenta"> <span> Deposito </span></LinkStyled>
+                      <LinkStyled to="/retirar-efectivo"> <span> Retiro </span></LinkStyled>
                     </>
                   )
               }

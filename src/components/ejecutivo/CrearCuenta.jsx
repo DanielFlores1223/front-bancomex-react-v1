@@ -27,12 +27,14 @@ const theme = createTheme({
 
 const CrearCuenta = () => {
 
+
   return (
     <Container component="main" maxWidth="sm" sx={{ mb: 8 }}>  
-        <Grid container spacing={2}>
+        <Grid container spacing={5}>
             <h2>Seleccione el tipo de cuenta</h2>  
             <Grid item xs={12} sm={6}>
-                <Card sx={{ maxWidth: 300 }}>
+                <Card sx={{ maxWidth: 300, cursor: 'pointer' }}>
+                  <Link to="/crear-cliente/debito" state={{type: 'Debito'}}>
                     <CardMedia
                     component="img"
                     height="200"
@@ -44,17 +46,17 @@ const CrearCuenta = () => {
                         </Typography>
                     </CardContent>
                     <CardActions>
-                    <ThemeProvider theme={theme}>
-                        <Link to="/crear-cliente">
-                            <Button size="medium" color="primary" startIcon={<CreditCardIcon/>}>Crear</Button>
-                        </Link>
-                        </ThemeProvider>
+                    {/* <ThemeProvider theme={theme}> */}
+                            {/* <Button size="medium" color="primary" startIcon={<CreditCardIcon/>}>Crear</Button> */}
+                        {/* </ThemeProvider> */}
                     </CardActions>
+                    </Link>
                 </Card>
             </Grid>
             <br></br>
             <Grid item xs={12} sm={6}>
-                <Card sx={{ maxWidth: 300 }}>
+                    <Link to="/crear-cliente/credito"  state={{type: 'Credito'}}>
+                <Card sx={{ maxWidth: 300, cursor: 'pointer' }}>
                     <CardMedia
                     component="img"
                     height="200"
@@ -66,13 +68,12 @@ const CrearCuenta = () => {
                         </Typography>
                     </CardContent>
                     <CardActions>
-                    <ThemeProvider theme={theme}>
-                        <Link to="/crear-cliente">
-                            <Button size="medium" color="primary" startIcon={<CreditCardIcon/>}>Crear</Button>
-                        </Link>
-                    </ThemeProvider>
+                    {/* <ThemeProvider theme={theme}> */}
+                            {/* <Button size="medium" color="primary" startIcon={<CreditCardIcon/>}>Crear</Button> */}
+                    {/* </ThemeProvider> */}
                     </CardActions>
                 </Card>
+                        </Link>
             </Grid>
         </Grid>
     </Container>

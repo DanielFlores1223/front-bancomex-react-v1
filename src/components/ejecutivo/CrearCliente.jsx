@@ -2,7 +2,6 @@ import React from "react";
 import { useFormik } from "formik";
 import service from "../../service";
 import * as Yup from "yup";
-import { useSnackbar } from "notistack";
 import "yup-phone-lite";
 
 import {
@@ -48,79 +47,51 @@ const generos = [
   },
 ];
 
-const CrearCliente = () => {
-  // Notistick - Notificaciones
-  const { enqueueSnackbar } = useSnackbar();
-
+const CrearCliente = ({setValue, cliente, setCliente}) => {
+  
   const formik = useFormik({
     initialValues: {
-      firstName: "",
-      lastName: "",
-      gender: "",
-      street: "",
-      intNumber: "",
-      extNumber: "",
-      suburb: "",
-      zipcode: "",
-      city: "",
-      state: "",
-      phone: "",
-      curp: "",
-      rfc: "",
-      ine: "",
-      email: "",
+      firstName: cliente.firstName,
+      lastName: cliente.lastName,
+      gender: cliente.gender,
+      street: cliente.street,
+      intNumber: cliente.intNumber,
+      extNumber: cliente.extNumber,
+      suburb: cliente.suburb,
+      zipcode: cliente.zipcode,
+      city: cliente.city,
+      state: cliente.state,
+      phone: cliente.phone,
+      curp: cliente.curp,
+      rfc: cliente.rfc,
+      ine: cliente.ine,
+      email: cliente.email,
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      crear(values);
+      /* crearCliente(values); */
+      setCliente({...cliente,values})
+      console.log()
     },
   });
-
-  const crear = async (values) => {
-    const { developURL } = service;
-    const data = { ...values };
-    console.log(data);
-    const url = `${developURL}/client`;
-    const fetchConfig = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: localStorage.getItem("t"),
-      },
-      body: JSON.stringify(data),
-    };
-
-    try {
-      const response = await fetch(url, fetchConfig);
-      const jsonResponse = await response.json();
-
-      if (jsonResponse.success) {
-        enqueueSnackbar("Se ha creado el cliente satisfactoriamente", {
-          variant: "success",
-        });
-
-        return;
-      }
-      enqueueSnackbar("Hubo un error al crear el cliente", {
-        variant: "error",
-      });
-    } catch (error) {
-      enqueueSnackbar("Hubo un error al enviar la petición", {
-        variant: "error",
-      });
-    }
-  };
-
-  //
+  
+  function enviarDatos(datos) {
+  setValue(1);
+    setCliente(datos)
+    console.log(formik.values);
+  }
+  
+  
+  // Genero Dropdown
   const handleChange = (event) => {
     setGenero(event.target.value);
   };
-
+  
   return (
     // <Container component="main" maxWidth="sm" sx={{ mb: 8 }}>
     <Grid sx={{ mt: 2 }}>
       <form onSubmit={formik.handleSubmit}>
-        <Grid container spacing={3}>
+        <Grid container spacing={2}>
           <Grid item xs={12} sm={5}>
             <TextField
               fullWidth
@@ -342,11 +313,12 @@ const CrearCliente = () => {
               fullWidth
               color="primary"
               variant="contained"
-              type="submit"
+              // type="submit"
               size="large"
               sx={{ mt: 3 }}
+              onClick={() => enviarDatos(formik.values)}
             >
-              Crear Cliente
+              Siguiente
             </Button>
           </Grid>
         </Grid>
