@@ -23,6 +23,7 @@ const InfoCredito = () => {
      const [client, setClient] = useState({});
      const [employee, setEmployee] = useState({});
      const [properties, setProperties] = useState([]);
+     const navigateTo = useNavigate();
 
      const formik = useFormik({
           initialValues: {
@@ -84,6 +85,9 @@ const InfoCredito = () => {
                }
 
                //Todo bien
+
+               //Redireccionamos a la vista principal de creditos
+               navigateTo('/creditos')
           } catch (error) {
                //alerta algo salio mal
           }
