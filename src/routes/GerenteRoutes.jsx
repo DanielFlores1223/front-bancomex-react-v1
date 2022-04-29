@@ -8,6 +8,8 @@ import Home from '../components/gerente/Home'
 import InfoCredito from '../components/gerente/InfoCredito'
 import LayoutGerente from '../components/gerente/LayoutGerente'
 import ListaCreditos from '../components/gerente/ListaCreditos'
+import Opciones from '../components/common/opciones/Opciones'
+
 
 const GerenteRoutes = ( {setLoginSuccess, setRole} ) => {
   return (
@@ -22,6 +24,7 @@ const GerenteRoutes = ( {setLoginSuccess, setRole} ) => {
                 <Route path = 'cuentas' element = {<Cuentas />} />
                 <Route path = 'creditos' element = {<ListaCreditos />} />
                 <Route path = 'creditos/:id' element = {<InfoCredito />} />
+                <Route path = 'opciones' element={<Opciones />} />
             </Route>
       </Routes>
       </BrowserRouter>

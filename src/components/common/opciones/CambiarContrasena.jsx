@@ -1,6 +1,8 @@
-import React from "react";
+import {React, useState} from "react";
+import service from "../../../service";
 import { Grid, Typography, Box, TextField, Button } from "@mui/material";
 import { useSnackbar } from "notistack";
+
 
 
 const CambiarContrasena = () => {
@@ -8,16 +10,21 @@ const CambiarContrasena = () => {
   // Hook de Notistack
   const { enqueueSnackbar } = useSnackbar();
 
+  const [passwordBefore, setPasswordBefore] = useState('');
+  const [password, setPassword] = useState('');
+
 
     // Fetch para crear el cliente
     const cambiaContrasena = async (values) => {
       const { developURL } = service;
       const data = {
         //valores hacia el backend
+        passwordBefore,
+        password
       };
       // Verifica los datos de la petición
       console.log(data);
-      const url = `${developURL}/client`;
+      const url = `${developURL}/employees/changePassword`;
       const fetchConfig = {
         method: "POST",
         headers: {
@@ -39,15 +46,13 @@ const CambiarContrasena = () => {
               variant: "success",
             }
           );
-          
-  
           return;
         }
         enqueueSnackbar(jsonResponse.msg, {
           variant: "error",
         });
       } catch (error) {
-        enqueueSnackbar("Hubo un errorintentalo de nuevo", {
+        enqueueSnackbar("Hubo un error intentalo de nuevo", {
           variant: "error",
         });
       }
@@ -65,22 +70,22 @@ const CambiarContrasena = () => {
         <TextField
           fullWidth
           size="medium"
-          id="password"
-          name="password"
+          id="passwordBefore"
+          name="passwordBefore"
           label="Contraseña Actual"
-          value=""
-          onChange={() => {}}
+          value={passwordBefore}
+          onChange={() => setPasswordBefore(event.target.value)}
         />
       </Grid>
       <Grid item xs={12} sm={12}>
         <TextField
           fullWidth
           size="medium"
-          id="password"
-          name="password"
+          id="Password"
+          name="Password"
           label="Nueva Contraseña"
-          value=""
-          onChange={() => {}}
+          value={password}
+          onChange={() => setPassword(event.target.value)}
         />
       </Grid>
       <Grid item xs={12} sm={12}>
@@ -91,6 +96,7 @@ const CambiarContrasena = () => {
           sx={{
             marginTop: "1rem",
           }}
+          onClick={() => cambiaContrasena()}
         >
           Actualizar Contraseña
         </Button>

@@ -135,7 +135,7 @@ console.log(jsonResponse);
 
         return;
       }
-      setResultAmount(jsonResponse.result);
+      setResultAmount(jsonResponse.result.toLocaleString('en-US', {maximumFractionDigits:2}));
 
     }catch(error){
       setErrorExist(true);
@@ -190,7 +190,7 @@ console.log(jsonResponse);
     {renderCard('Total creditos otorgados', `${resultCredits}`, 'https://res.cloudinary.com/cardiadev/image/upload/v1651160166/bancomex/creditos_aprobado_hvm5lg.jpg')}
     </Grid>
     <Grid item xs={4}>
-    {renderCard('Monto total del banco', `${resultAmount} MXN`, 'https://res.cloudinary.com/cardiadev/image/upload/v1651160167/bancomex/monto_total_banco_eodh0o.jpg')}
+    {renderCard('Monto total del banco', `$ ${resultAmount} MXN`, 'https://res.cloudinary.com/cardiadev/image/upload/v1651160167/bancomex/monto_total_banco_eodh0o.jpg')}
     </Grid>
   </Grid>   
       </div>
