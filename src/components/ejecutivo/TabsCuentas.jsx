@@ -37,7 +37,7 @@ const TabsCuentas = () => {
     porcentage: "",
   });
 
-  console.log(location);
+  // console.log(location);
 
   function a11yProps(index) {
     return {

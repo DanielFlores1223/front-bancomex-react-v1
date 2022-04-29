@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import Spinner from "../common/spinner/Spinner";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 // Validaciones YUP
 const validationSchema = Yup.object({
@@ -123,6 +123,12 @@ const FormularioBeneficiario = ({
           porcentage: "",
         });
         setValue(0);
+
+        navigate('/crear-cuenta');
+
+        // setTimeout(() => {
+        // }, 4000);
+
         return;
       }
       enqueueSnackbar(jsonResponse.msg, {
@@ -135,10 +141,13 @@ const FormularioBeneficiario = ({
     }
   };
 
+  let navigate = useNavigate();
+
   // Funcion envio de formulario
   function enviarDatos(datos) {
     setBeneficiario(datos);
-    console.log(formik.values);
+    
+    // console.log(formik.values);
   }
 
   return (

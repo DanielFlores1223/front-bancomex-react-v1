@@ -6,6 +6,8 @@ import Cuentas from '../components/gerente/Cuentas'
 import Empleados from '../components/gerente/Empleados'
 import Home from '../components/gerente/Home'
 import LayoutGerente from '../components/gerente/LayoutGerente'
+import Opciones from '../components/common/opciones/Opciones'
+
 
 const GerenteRoutes = ( {setLoginSuccess, setRole} ) => {
   return (
@@ -18,6 +20,7 @@ const GerenteRoutes = ( {setLoginSuccess, setRole} ) => {
                 <Route path = 'empleados' element = {<Empleados/>} />
                 <Route path = 'empleados/actualiza/:id' element= {<ActualizaEmplado/>} />
                 <Route path = 'cuentas' element = {<Cuentas />} />
+                <Route path = 'opciones' element={<Opciones />} />
             </Route>
       </Routes>
       </BrowserRouter>
