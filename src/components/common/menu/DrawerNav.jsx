@@ -18,7 +18,8 @@ const useStyles = makeStyles((theme) => ({
      },
      toolbar: theme.mixins.toolbar,
      logo: {
-          margin: '0.7rem'
+          // margin: '0.7rem',
+          margin: '1.2rem 1rem'
      },
 }));
 

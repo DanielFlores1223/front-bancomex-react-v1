@@ -159,8 +159,7 @@ fetchData()
                   lg={5} 
                   direction='column'
                   alignItems="center" 
-                  justifyContent='center' 
-                 
+                  justifyContent='center'    
             >
               {!clear ? (
                 <form onSubmit={(e)=>{
