@@ -9,6 +9,7 @@ import Credito from '../components/ejecutivo/Credito'
 import Cuentas from '../components/ejecutivo/Cuentas'
 import EstadoCuenta from '../components/ejecutivo/EstadoCuenta'
 import Opciones from '../components/common/opciones/Opciones'
+import TabsCuentas from '../components/ejecutivo/TabsCuentas'
 
 const EjecutivoRoutes = ({ setLoginSuccess, setRole }) => {
   return (
@@ -17,8 +18,9 @@ const EjecutivoRoutes = ({ setLoginSuccess, setRole }) => {
          <Route path='/' element={<LayoutEjecutivo setLoginSuccess={setLoginSuccess} 
                                                 setRole={setRole}/>}>
              <Route index element={<Home />} />
-             <Route path='crear-cliente' element={<CrearCliente />} />
              <Route path="formulario-beneficiario" element={<FormularioBeneficiario />}/>
+             <Route path="crear-cliente/debito" element={<TabsCuentas />} />
+            <Route path="crear-cliente/credito" element={<TabsCuentas />} />
              <Route path="crear-cuenta" element={<CrearCuenta />}/>
              <Route path="clientes" element={<Cuentas />}/>
              <Route path="clientes/:id" element={<EstadoCuenta/>}/>
