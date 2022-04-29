@@ -2,7 +2,6 @@ import React from "react";
 import { useFormik } from "formik";
 import service from "../../service";
 import * as Yup from "yup";
-import { useSnackbar } from "notistack";
 import "yup-phone-lite";
 
 import {
@@ -49,8 +48,6 @@ const generos = [
 ];
 
 const CrearCliente = ({setValue, cliente, setCliente}) => {
-  // Notistick - Notificaciones
-  const { enqueueSnackbar } = useSnackbar();
   
   const formik = useFormik({
     initialValues: {
@@ -94,7 +91,7 @@ const CrearCliente = ({setValue, cliente, setCliente}) => {
     // <Container component="main" maxWidth="sm" sx={{ mb: 8 }}>
     <Grid sx={{ mt: 2 }}>
       <form onSubmit={formik.handleSubmit}>
-        <Grid container spacing={3}>
+        <Grid container spacing={2}>
           <Grid item xs={12} sm={5}>
             <TextField
               fullWidth

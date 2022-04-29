@@ -55,7 +55,7 @@ const CrearCuenta = () => {
             </Grid>
             <br></br>
             <Grid item xs={12} sm={6}>
-                    <Link to="/crear-cliente">
+                    <Link to="/crear-cliente/credito"  state={{type: 'Credito'}}>
                 <Card sx={{ maxWidth: 300, cursor: 'pointer' }}>
                     <CardMedia
                     component="img"

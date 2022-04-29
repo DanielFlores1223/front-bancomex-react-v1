@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import ImgUser from "../../../img/user.png";
+import { useNavigate } from "react-router-dom";
 
 import {
   List,
@@ -15,12 +16,12 @@ const UserProfileStyle = styled.div`
   padding: 16px 20px;
   border: 1px solid #d9d9d9;
   border-radius: 12px;
-  cursor: pointer;
   display: flex;
   justify-content: flex-start;
   align-items: center;
   margin-bottom: 3rem;
   margin: 1rem;
+  cursor: pointer;
 
   & div {
     margin-left: 0.5rem;
@@ -53,9 +54,11 @@ const NavList = ({ links }) => {
   );
   const [role, setRole] = useState(localStorage.getItem("role") ?? "Role");
 
+  const navigate = useNavigate();
+
   return (
     <div>
-      <UserProfileStyle>
+      <UserProfileStyle onClick={() =>{ navigate('/opciones')  }}>
         <img src={ImgUser} alt="user" style={{ width: "30px" }} />
         <div>
           <p className="nameUser">{nameUser}</p>

@@ -17,6 +17,7 @@ import Stack from "@mui/material/Stack";
 import Spinner from "../common/spinner/Spinner";
 import { useLocation } from "react-router-dom";
 
+// Validaciones YUP
 const validationSchema = Yup.object({
   firstName: Yup.string().required("*Campo requerido"),
   lastName: Yup.string().required("*Campo requerido"),
@@ -34,6 +35,7 @@ const validationSchema = Yup.object({
     .required("*Campo requerido"),
 });
 
+// Inicia el formulario
 const FormularioBeneficiario = ({
   beneficiario,
   setBeneficiario,
@@ -41,8 +43,6 @@ const FormularioBeneficiario = ({
   setCliente,
   setValue,
 }) => {
-
-
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -63,6 +63,7 @@ const FormularioBeneficiario = ({
     },
   });
 
+  // Fetch para crear el cliente
   const crearCliente = async (values) => {
     const { developURL } = service;
     const data = {
@@ -134,6 +135,7 @@ const FormularioBeneficiario = ({
     }
   };
 
+  // Funcion envio de formulario
   function enviarDatos(datos) {
     setBeneficiario(datos);
     console.log(formik.values);

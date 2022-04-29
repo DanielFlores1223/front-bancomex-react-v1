@@ -110,6 +110,7 @@ const PropiedadesAvales = ( { setDisabledTabs,
           try {
                const response = await fetch(url, fetchConfig);
                const responseJSON = await response.json();
+               
                if (!responseJSON.success) {
                     //Alerta de que algo salio mal
                     return
@@ -124,6 +125,9 @@ const PropiedadesAvales = ( { setDisabledTabs,
                if (noTextField === 0) setValueInput1('');
                if (noTextField === 1) setValueInput2('');
                if (noTextField === 2) setValueInput3('');
+               // Mensaje SUCCESS
+
+
           } catch (error) {
                //Alerta algo salio mal con el servidor
           }

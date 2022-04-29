@@ -110,7 +110,7 @@ const FormularioAvales = ({guarantees,
                const responseJSON = await response.json();
 
                if (!responseJSON.success) {
-                    //error
+                    // Mensaje de error
                     return;
                }
 
@@ -124,6 +124,7 @@ const FormularioAvales = ({guarantees,
 
                //Save guarantees registered in the DB
                localStorage.setItem('gua', JSON.stringify(responseJSON.result.guarantees) );
+               // Mensaje satisfactorio
 
           } catch (error) {
                //error
