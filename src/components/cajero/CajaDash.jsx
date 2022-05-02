@@ -67,42 +67,43 @@ const CajaDash = () => {
               />
             </Grid>
             <Grid container item xs={12} md={5}>
-              <Typography variant="h5" color="primary">
-                Información de la Caja
-              </Typography>
-
-              <Typography variant="body1" paragraph={true}>
-                <b>Nombre: </b> {info.CashBox.name}
-                <Typography variant="body1">
-                  <b>Cantidad de efectivo inicial: </b>{" "}
-                  {`$${info.totalStart} MXN`}
+              <Grid container item xs={12}>
+                <Typography variant="h5" color="primary">
+                  Información de la Caja
                 </Typography>
-                <Typography variant="body1">
-                  <b>Fecha de apertura: </b> {info.date.split("T")[0]}
+              </Grid>
+              <Grid container item xs={12}>
+                <Typography variant="body1" paragraph={true}>
+                  <b>Nombre: </b> {info.CashBox.name}
+                  <Typography variant="body1">
+                    <b>Cantidad de efectivo inicial: </b>{" "}
+                    {`$ ${(info.totalStart).toLocaleString('en-US', {maximumFractionDigits:2})} MXN`}
+                  </Typography>
+                  <Typography variant="body1">
+                    <b>Fecha de apertura: </b> {info.date.split("T")[0]}
+                  </Typography>
+                  <Typography variant="body1">
+                    <b>Hora de apertura: </b>{" "}
+                    {new Date(info.date).toLocaleTimeString()}
+                  </Typography>
+                  <Typography variant="body1">
+                    <b>Cajero: </b>{" "}
+                    {`${info.Employee.firstName} ${info.Employee.lastName}`}
+                  </Typography>
                 </Typography>
-                <Typography variant="body1">
-                  <b>Hora de apertura: </b>{" "}
-                  {new Date(info.date).toLocaleTimeString()}
-                </Typography>
-                <Typography variant="body1">
-                  <b>Cajero: </b>{" "}
-                  {`${info.Employee.firstName} ${info.Employee.lastName}`}
-                </Typography>
-              </Typography>
+              </Grid>
             </Grid>
           </Grid>
 
-          
-          <Grid container justifyContent='center'>
-            
-              <Typography
-                variant="body1"
-                align="center"
-                style={{ margin: "3rem" }}
-              >
-                <b>Nota: </b> Para poder cerrar sesión, necesitas hacer corte en
-                la caja.
-              </Typography>
+          <Grid container justifyContent="center">
+            <Typography
+              variant="body1"
+              align="center"
+              style={{ margin: "3rem" }}
+            >
+              <b>Nota: </b> Para poder cerrar sesión, necesitas hacer corte en
+              la caja.
+            </Typography>
           </Grid>
           <Grid container justifyContent="center">
             <Button

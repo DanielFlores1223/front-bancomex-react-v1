@@ -7,7 +7,6 @@ import Spinner from '../common/spinner/Spinner';
 import { getCashBoxId } from '../common/functions/general'
 import service from '../../service';
 import { useSnackbar } from "notistack";
-import NumberFormat from 'react-number-format';
 
 
 const styles = makeStyles((theme) => ({
@@ -62,8 +61,8 @@ const DepositarCuenta = () => {
   const [showSpinner, setShowSpinner] = useState(false);
   const [canDeposit, setCanDeposit] = useState(false);
   const [msg, setMsg] = useState({show:false, txt:null, type:null});
-  const { enqueueSnackbar } = useSnackbar();
-
+    // Hook de Notistack
+    const { enqueueSnackbar } = useSnackbar();
 
   const classes = styles();
 
@@ -119,23 +118,24 @@ const DepositarCuenta = () => {
       const jsonResponse = await response.json();
       setShowSpinner(false);
       if( !jsonResponse.success ) {
-        enqueueSnackbar("No se encontro ningun numero de cuenta con esta información", {
+        enqueueSnackbar("No se encontró la cuenta", {
           preventDuplicate: true,
           variant: "error",
         });
+        // changeMsg('error','No se encontró una cuenta');
         return;
       }
       let data = jsonResponse.result
       if(!data.Account.state){
         enqueueSnackbar("La cuenta se encuentra desactivada", {
           preventDuplicate: true,
-          variant: "warning",
+          variant: "error",
         });
         // changeMsg('error', 'La cuenta se encuentra desactivada')
       }else if(!data.Account.Client.active){
         enqueueSnackbar("El cliente se encuentra desactivada", {
           preventDuplicate: true,
-          variant: "warning",
+          variant: "error",
         });
         // changeMsg('error', 'El cliente se encuentra desactivada')
       }else{
@@ -146,16 +146,14 @@ const DepositarCuenta = () => {
         resetForm();
       }
     } catch (error) {
-      setShowSpinner(false);
       enqueueSnackbar("Hubo un error con el servidor intentalo de nuevo", {
         preventDuplicate: true,
         variant: "warning",
       });
+      // setShowSpinner(false);
       // changeMsg('error','Algo salio mal... Intentelo mas tarde!');
     }
   }
-
-
   
   const depositarCuenta = async ({ cardNumber, amountDeposit}, resetForm) => {
     const { developURL } = service
@@ -174,13 +172,25 @@ const DepositarCuenta = () => {
       setShowSpinner(false);
 
       if( !jsonResponse.success ) {
-        changeMsg('error','Los datos proporcionados son incorrectos');
+        enqueueSnackbar("Los datos proporcionados son incorrectos", {
+          preventDuplicate: true,
+          variant: "error",
+        });
+        // changeMsg('error','Los datos proporcionados son incorrectos');
       }else{
-        changeMsg('success', 'Se realizó el deposito')
+        enqueueSnackbar("Se realizó el deposito correctamente", {
+          preventDuplicate: true,
+          variant: "success",
+        });
+        // changeMsg('success', 'Se realizó el deposito')
       }
     } catch (error) {
       setShowSpinner(false);
-      changeMsg('error','Algo salio mal... Intentelo mas tarde!');
+      enqueueSnackbar("Algo salio mal... Intentelo mas tarde!", {
+        preventDuplicate: true,
+        variant: "error",
+      });
+      // changeMsg('error','Algo salio mal... Intentelo mas tarde!');
     }
     setCanDeposit(false)
     resetForm()
@@ -191,11 +201,6 @@ const DepositarCuenta = () => {
     formikFindAccount.values.cardNumber = event.target.value
     setCanDeposit(false);
   };
-
-  // funcion react number format
-  const formatNumber = (num) => {
-    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
-  }
 
   return(
         <Grid container 
