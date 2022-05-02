@@ -1,7 +1,7 @@
 import { useState, useRef, ReactDOM } from 'react'
 import { QrReader } from 'react-qr-reader'
 import service from '../../service'
-import { Typography, Grid, Button } from '@material-ui/core'
+import { Typography, Grid, Button } from '@mui/material'
 import Spinner from '../common/spinner/Spinner'
 
 const QrReaderEjec = ( { setValue, setClientId, setDisabledTabs } ) => {
@@ -54,17 +54,22 @@ const QrReaderEjec = ( { setValue, setClientId, setDisabledTabs } ) => {
                     </div>
                       { curp !== '' ? (
                            /* Client Info section */
-                           <Grid container item xs={12} direction='column'>
-                              <Typography variant='body1' >
-                                   Cliente: {name} {lastName}
-                                   <Typography variant='body1' >
+                           <Grid container xs={12} direction='column' sx={{textAlign: "center"}}>
+                              <Typography variant='h6'sx={{fontWeight: '500'}}>
+                                   Cliente:
+                              </Typography>
+                              <Typography variant='h5'sx={{fontWeight: '600', marginBottom: '1rem'}}>
+                              {name} {lastName}
+                              </Typography>
+
+                                   <Typography variant='body1' sx={{marginBottom: '1rem'}} >
                                         Solicitale al cliente una identificación para comprar su CURP
                                    </Typography>
-                                   <Typography variant='body1' >
+                                   <Typography variant='h6' >
                                         CURP: {curp}
                                    </Typography>
-                              </Typography>
-                              <Grid container item xs={12} justifyContent='flex-end'>
+                              <Grid container xs={12} justifyContent='center'
+                              sx={{marginTop:'2rem'}}>
                                 <Button color="primary" 
                                         variant="contained"  
                                         onClick={() => { setValue(1); setDisabledTabs(false) }}

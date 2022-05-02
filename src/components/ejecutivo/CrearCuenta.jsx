@@ -45,16 +45,17 @@ const CrearCuenta = () => {
               <CardMedia
                 component="img"
                 height="200"
-                image="https://images.pexels.com/photos/50987/money-card-business-credit-card-50987.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                image="https://res.cloudinary.com/cardiadev/image/upload/v1651481468/bancomex/debito_tarjeta_c8lxxs.png"
+                sx={{backgroundColor: "#103160"}}
               />
-              <CardContent>
+              <CardContent sx={{backgroundColor:"#103160"}}>
                 <Typography
                   gutterBottom
                   variant="h4"
                   component="div"
                   sx={{
                     mt: 2,
-                    color: "rgba(0, 0, 0, 0.87)",
+                    color: "rgba(255, 255, 255, 0.87)",
                     textDecoration: "inherit",
                     fontWeight: "bold",
                 }}
@@ -80,16 +81,17 @@ const CrearCuenta = () => {
               <CardMedia
                 component="img"
                 height="200"
-                image="https://images.pexels.com/photos/50987/money-card-business-credit-card-50987.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                image="https://res.cloudinary.com/cardiadev/image/upload/v1651481468/bancomex/credito_tarjeta_tzocwo.png"
+                sx={{backgroundColor: "#103160"}}
               />
-              <CardContent>
+              <CardContent sx={{backgroundColor:"#103160"}}>
                 <Typography
                   gutterBottom
                   variant="h4"
                   component="div"
                   sx={{
                     mt: 2,
-                    color: "rgba(0, 0, 0, 0.87)",
+                    color: "rgba(255, 255, 255, 0.87)",
                     textDecoration: "inherit",
                     fontWeight: "bold"
                   }}

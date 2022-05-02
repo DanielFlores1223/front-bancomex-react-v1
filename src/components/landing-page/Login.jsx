@@ -3,7 +3,8 @@ import { useFormik } from 'formik';
 import service from '../../service';
 import * as Yup from 'yup';
 import Button from '@mui/material/Button';
-import { Grid, TextField, makeStyles, Typography } from "@material-ui/core";
+import { Grid, TextField, makeStyles } from "@material-ui/core";
+import {Box,Typography} from "@mui/material"
 import ImgLogin from '../../img/login-img.jpeg';
 import { Alert } from '@mui/material';
 import Spinner from '../common/spinner/Spinner';
@@ -11,7 +12,7 @@ import Logo from '../../img/bancomex_color.svg';
 
 const styles = makeStyles((theme) => ({
     marginTextField: {
-      marginBottom: '1rem',
+      marginBottom: '2rem',
     },
     marginDiv: {
         padding: '1rem 5rem',
@@ -22,13 +23,12 @@ const styles = makeStyles((theme) => ({
         marginBottom: '2rem'
     },
     marginLogo: {
+        marginTop: '2.5rem',
         marginBottom: '1.5rem',
     },
     formLogin: {
-        padding: '2rem 4rem',
-        border: '2px solid #F8F9F9',
+        padding: '4rem',
         borderRadius: '10px',
-        background: '#F8F9F9',
         maxHeight: '100%',
     }
 
@@ -119,9 +119,11 @@ const Login = ({setLoginSuccess, setRole, role}) => {
   }   
 
   return (
-    <div className={classes.marginDiv}>
+      <Box sx={{ width: "85%", margin: "auto" }}>
+
+
         <Grid container justifyContent='center' className={classes.marginLogo}>
-            <img src={Logo} alt="logo" />
+            <img src={Logo} alt="logo" height="60px" />
         </Grid>
         <Grid container spacing={1}>
             <Grid container 
@@ -133,10 +135,10 @@ const Login = ({setLoginSuccess, setRole, role}) => {
                   alignItems="flex-start" 
                   justifyContent='center'
             >
-                <Typography align="right" variant="h4">
+                {/* <Typography variant="h4" color="initial" sx={{ fontWeight: "500", marginTop:'3rem' }}>
                     Hola, Bienvenido
-                </Typography>
-                <img src={ImgLogin} alt="img login" style={{ height: '28rem'}} />
+                </Typography> */}
+                <img src={ImgLogin} alt="img login" style={{height: '28rem', marginTop:'3rem'}} />
             </Grid>
             <Grid container 
                   item 
@@ -149,7 +151,7 @@ const Login = ({setLoginSuccess, setRole, role}) => {
             >
                 <form onSubmit={formik.handleSubmit} className={classes.formLogin}>
                     {errorExist && (<Alert className={classes.alert} severity="error" fullWidth> {msgError} </Alert>)}
-                    <Typography align="center" variant="h4" className={classes.marginTextField}>
+                    <Typography align="center" variant="h4" sx={{fontWeight: "500", marginBottom:'2rem'}}>
                         Iniciar Sesión
                     </Typography>
                     <TextField 
@@ -157,6 +159,7 @@ const Login = ({setLoginSuccess, setRole, role}) => {
                         id='code'
                         name='code'
                         label='Código'
+                        variant="outlined"
                         className={classes.marginTextField}
                         value={formik.values.code}
                         onChange={formik.handleChange}
@@ -169,6 +172,7 @@ const Login = ({setLoginSuccess, setRole, role}) => {
                         id='password'
                         name='password'
                         label='Contraseña'
+                        variant="outlined"
                         className={classes.marginTextField}
                         value={formik.values.password}
                         onChange={formik.handleChange}
@@ -179,8 +183,9 @@ const Login = ({setLoginSuccess, setRole, role}) => {
                         disabled={showSpinner}
                     />
 
-                    <Button color="primary" 
-                            variant="contained" 
+                    <Button variant="contained"
+          color="primary"
+          size="large" 
                             fullWidth 
                             type="submit"
                     >
@@ -192,7 +197,7 @@ const Login = ({setLoginSuccess, setRole, role}) => {
                 </form>
             </Grid>
         </Grid>
-    </div>
+      </Box>
   )
 }
 

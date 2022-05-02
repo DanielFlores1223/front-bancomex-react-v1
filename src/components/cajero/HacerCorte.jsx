@@ -297,7 +297,7 @@ const HacerCorte = ({setLoginSuccess, setRole}) => {
          <Grid container justifyContent='center'>
               <div className={classes.showMoney}>
                     <Typography variant='h4'>
-                          {totalEnd < 0 ? 'Valor no valido': `$${totalEnd} MXN`}
+                          {totalEnd < 0 ? 'Valor no valido': `$ ${totalEnd.toLocaleString('en-US', {maximumFractionDigits:2})} MXN`}
                     </Typography>
                </div>
          </Grid>
@@ -524,6 +524,7 @@ const HacerCorte = ({setLoginSuccess, setRole}) => {
              <Button color="primary" 
                        variant="contained" 
                        fullWidth 
+                       size='large'
                        type="submit"
                        style={{marginTop:'2rem'}}
              >

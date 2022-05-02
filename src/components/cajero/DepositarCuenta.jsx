@@ -5,6 +5,9 @@ import { Grid, TextField, makeStyles, Typography } from "@material-ui/core";
 import { Alert, Snackbar, Button } from '@mui/material';
 import Spinner from '../common/spinner/Spinner';
 import service from '../../service';
+import { useSnackbar } from "notistack";
+import NumberFormat from 'react-number-format';
+
 
 const styles = makeStyles((theme) => ({
   marginTextField: {
@@ -58,6 +61,8 @@ const DepositarCuenta = () => {
   const [showSpinner, setShowSpinner] = useState(false);
   const [canDeposit, setCanDeposit] = useState(false);
   const [msg, setMsg] = useState({show:false, txt:null, type:null});
+  const { enqueueSnackbar } = useSnackbar();
+
 
   const classes = styles();
 
@@ -113,14 +118,25 @@ const DepositarCuenta = () => {
       const jsonResponse = await response.json();
       setShowSpinner(false);
       if( !jsonResponse.success ) {
-        changeMsg('error','No se encontró una cuenta');
+        enqueueSnackbar("No se encontro ningun numero de cuenta con esta información", {
+          preventDuplicate: true,
+          variant: "error",
+        });
         return;
       }
       let data = jsonResponse.result
       if(!data.Account.state){
-        changeMsg('error', 'La cuenta se encuentra desactivada')
+        enqueueSnackbar("La cuenta se encuentra desactivada", {
+          preventDuplicate: true,
+          variant: "warning",
+        });
+        // changeMsg('error', 'La cuenta se encuentra desactivada')
       }else if(!data.Account.Client.active){
-        changeMsg('error', 'El cliente se encuentra desactivada')
+        enqueueSnackbar("El cliente se encuentra desactivada", {
+          preventDuplicate: true,
+          variant: "warning",
+        });
+        // changeMsg('error', 'El cliente se encuentra desactivada')
       }else{
         formikDeposit.values.cardNumber = cardNumber
         formikDeposit.values.customerFirstName = data.Account.Client.firstName
@@ -130,9 +146,15 @@ const DepositarCuenta = () => {
       }
     } catch (error) {
       setShowSpinner(false);
-      changeMsg('error','Algo salio mal... Intentelo mas tarde!');
+      enqueueSnackbar("Hubo un error con el servidor intentalo de nuevo", {
+        preventDuplicate: true,
+        variant: "warning",
+      });
+      // changeMsg('error','Algo salio mal... Intentelo mas tarde!');
     }
   }
+
+
   
   const depositarCuenta = async ({ cardNumber, amountDeposit}, resetForm) => {
     const { developURL } = service
@@ -168,6 +190,11 @@ const DepositarCuenta = () => {
     formikFindAccount.values.cardNumber = event.target.value
     setCanDeposit(false);
   };
+
+  // funcion react number format
+  const formatNumber = (num) => {
+    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
+  }
 
   return(
         <Grid container 
