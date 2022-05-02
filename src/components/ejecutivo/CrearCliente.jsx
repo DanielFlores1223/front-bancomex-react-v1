@@ -1,4 +1,4 @@
-import React from "react";
+import {useState} from "react";
 import { useFormik } from "formik";
 import service from "../../service";
 import * as Yup from "yup";
@@ -50,6 +50,8 @@ const generos = [
 ];
 
 const CrearCliente = ({setValue, cliente, setCliente}) => {
+
+  const [fechaNac, setFechaNac] = useState('')
   
   const formik = useFormik({
     initialValues: {
@@ -92,7 +94,7 @@ const CrearCliente = ({setValue, cliente, setCliente}) => {
   const generateCurpRFC = () => { 
     const ap = formik.values.lastName.split(' ')[0];
     const am = formik.values.lastName.split(' ')[1];
-    const res = calcula(ap, am, formik.values.firstName, '2000-12-23', formik.values.gender, formik.values.state);
+    const res = calcula(ap, am, formik.values.firstName, fechaNac, formik.values.gender, formik.values.state);
     
     formik.values.curp = '';
     formik.values.rfc = '';
@@ -167,12 +169,8 @@ const CrearCliente = ({setValue, cliente, setCliente}) => {
                 InputLabelProps={{
                   shrink: true,
                 }}
-                value={formik.values.birthDate}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched.birthDate && Boolean(formik.errors.birthDate)
-                }
-                helperText={formik.touched.birthDate && formik.errors.birthDate}
+                value={fechaNac}
+                onChange={(e) => { setFechaNac(e.target.value); generateCurpRFC();}}
               />
             </Stack>
           </Grid>
@@ -269,9 +267,9 @@ const CrearCliente = ({setValue, cliente, setCliente}) => {
                   label="Estado"
                   name="state"
                   value={formik.values.state}
-              onChange={formik.handleChange}
-              error={formik.touched.state && Boolean(formik.errors.state)}
-              helperText={formik.touched.state && formik.errors.state}
+                  onChange={(e) => { formik.handleChange(e); generateCurpRFC(); } }
+                  error={formik.touched.state && Boolean(formik.errors.state)}
+                  helperText={formik.touched.state && formik.errors.state}
                 >
                   <MenuItem value={"Aguascalientes"}>Aguascalientes</MenuItem>
                   <MenuItem value={"Baja California"}>Baja California</MenuItem>
@@ -286,6 +284,7 @@ const CrearCliente = ({setValue, cliente, setCliente}) => {
                   <MenuItem value={"Guanajuato"}>Guanajuato</MenuItem>
                   <MenuItem value={"Guerrero"}>Guerrero</MenuItem>
                   <MenuItem value={"Hidalgo"}>Hidalgo</MenuItem>
+                  <MenuItem value={"Jalisco"}>Jalisco</MenuItem>
                   <MenuItem value={"México"}>México</MenuItem>
                   <MenuItem value={"Michoacán"}>Michoacán</MenuItem>
                   <MenuItem value={"Morelos"}>Morelos</MenuItem>
