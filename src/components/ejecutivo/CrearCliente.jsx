@@ -3,6 +3,7 @@ import { useFormik } from "formik";
 import service from "../../service";
 import * as Yup from "yup";
 import "yup-phone-lite";
+import { calcula } from '../common/functions/curp-rfc'
 
 import {
   Button,
@@ -86,6 +87,15 @@ const CrearCliente = ({setValue, cliente, setCliente}) => {
   const handleChange = (event) => {
     setGenero(event.target.value);
   };
+
+  const generateCurpRFC = () => { 
+    const ap = formik.values.lastName.split(' ')[0];
+    const am = formik.values.lastName.split(' ')[1];
+    const res = calcula(ap, am, formik.values.firstName, '2000-12-23', formik.values.gender, formik.values.state);
+    
+    formik.values.curp = res.CURP;
+    formik.values.rfc = res.rfc;
+  }
   
   return (
     // <Container component="main" maxWidth="sm" sx={{ mb: 8 }}>
@@ -278,6 +288,7 @@ const CrearCliente = ({setValue, cliente, setCliente}) => {
               error={formik.touched.rfc && Boolean(formik.errors.rfc)}
               helperText={formik.touched.rfc && formik.errors.rfc}
               inputProps={{ style: { textTransform: "uppercase" } }}
+              onClick={ () => generateCurpRFC() }
             />
           </Grid>
           <Grid item xs={12} sm={4}>

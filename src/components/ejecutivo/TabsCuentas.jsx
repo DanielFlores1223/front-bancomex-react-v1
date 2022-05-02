@@ -34,7 +34,7 @@ const TabsCuentas = () => {
     email: "",
     phone: "",
     relation: "",
-    porcentage: "",
+    porcentage: "100",
   });
 
   // console.log(location);
