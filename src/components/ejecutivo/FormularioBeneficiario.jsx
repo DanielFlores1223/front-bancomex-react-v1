@@ -120,7 +120,7 @@ const FormularioBeneficiario = ({
           email: "",
           phone: "",
           relation: "",
-          porcentage: "",
+          porcentage: "100",
         });
         setValue(0);
 
@@ -232,6 +232,7 @@ const FormularioBeneficiario = ({
               id="porcentage"
               name="porcentage"
               label="Porcentaje"
+              disabled={true}
               value={formik.values.porcentage}
               onChange={formik.handleChange}
               error={
