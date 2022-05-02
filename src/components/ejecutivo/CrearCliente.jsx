@@ -14,6 +14,7 @@ import {
   FormControl,
   FormHelperText,
   Grid,
+  Stack
 } from "@mui/material";
 
 // Validaciones con Yup de cada uno de los campos del formulario
@@ -102,7 +103,7 @@ const CrearCliente = ({setValue, cliente, setCliente}) => {
     <Grid sx={{ mt: 2 }}>
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={5}>
+          <Grid item xs={12} sm={4}>
             <TextField
               fullWidth
               size="medium"
@@ -117,7 +118,7 @@ const CrearCliente = ({setValue, cliente, setCliente}) => {
               helperText={formik.touched.firstName && formik.errors.firstName}
             />
           </Grid>
-          <Grid item xs={12} sm={5}>
+          <Grid item xs={12} sm={4}>
             <TextField
               fullWidth
               size="medium"
@@ -150,6 +151,27 @@ const CrearCliente = ({setValue, cliente, setCliente}) => {
                 {formik.touched.gender && formik.errors.gender}
               </FormHelperText>
             </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={2}>
+            <Stack noValidate spacing={3}>
+              <TextField
+                fullWidth
+                size="medium"
+                id="birthDate"
+                name="birthDate"
+                label="Fecha de nacimiento"
+                type="date"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                value={formik.values.birthDate}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.birthDate && Boolean(formik.errors.birthDate)
+                }
+                helperText={formik.touched.birthDate && formik.errors.birthDate}
+              />
+            </Stack>
           </Grid>
           <Grid item xs={12} sm={8}>
             <TextField
@@ -236,7 +258,53 @@ const CrearCliente = ({setValue, cliente, setCliente}) => {
             />
           </Grid>
           <Grid item xs={12} sm={3}>
-            <TextField
+          <FormControl fullWidth>
+                <InputLabel id="role">Estado</InputLabel>
+                <Select
+                fullWidth
+                  labelId="state"
+                  label="Estado"
+                  name="state"
+                  value={formik.values.state}
+              onChange={formik.handleChange}
+              error={formik.touched.state && Boolean(formik.errors.state)}
+              helperText={formik.touched.state && formik.errors.state}
+                >
+                  <MenuItem value={"Aguascalientes"}>Aguascalientes</MenuItem>
+                  <MenuItem value={"Baja California"}>Baja California</MenuItem>
+                  <MenuItem value={"Baja California Sur"}>Baja California Sur</MenuItem>
+                  <MenuItem value={"Campeche"}>Campeche</MenuItem>
+                  <MenuItem value={"Coahuila"}>Coahuila</MenuItem>
+                  <MenuItem value={"Colima"}>Colima</MenuItem>
+                  <MenuItem value={"Chiapas"}>Chiapas</MenuItem>
+                  <MenuItem value={"Chihuahua"}>Chihuahua</MenuItem>
+                  <MenuItem value={"Distrito Federal"}>Distrito Federal</MenuItem>
+                  <MenuItem value={"Durango"}>Durango</MenuItem>
+                  <MenuItem value={"Guanajuato"}>Guanajuato</MenuItem>
+                  <MenuItem value={"Guerrero"}>Guerrero</MenuItem>
+                  <MenuItem value={"Hidalgo"}>Hidalgo</MenuItem>
+                  <MenuItem value={"México"}>México</MenuItem>
+                  <MenuItem value={"Michoacán"}>Michoacán</MenuItem>
+                  <MenuItem value={"Morelos"}>Morelos</MenuItem>
+                  <MenuItem value={"Nayarit"}>Nayarit</MenuItem>
+                  <MenuItem value={"Nuevo León"}>Nuevo León</MenuItem>
+                  <MenuItem value={"Oaxaca"}>Oaxaca</MenuItem>
+                  <MenuItem value={"Puebla"}>Puebla</MenuItem>
+                  <MenuItem value={"Querétaro"}>Querétaro</MenuItem>
+                  <MenuItem value={"Quintana Roo"}>Quintana Roo</MenuItem>
+                  <MenuItem value={"San Luis Potosí"}>San Luis Potosí</MenuItem>
+                  <MenuItem value={"Sinaloa"}>Sinaloa</MenuItem>
+                  <MenuItem value={"Sonora"}>Sonora</MenuItem>
+                  <MenuItem value={"Tabasco"}>Tabasco</MenuItem>
+                  <MenuItem value={"Tamaulipas"}>Tamaulipas</MenuItem>
+                  <MenuItem value={"Tlaxcala"}>Tlaxcala</MenuItem>
+                  <MenuItem value={"Veracruz"}>Veracruz</MenuItem>
+                  <MenuItem value={"Yucatán"}>Yucatán</MenuItem>
+                  <MenuItem value={"Zacatecas"}>Zacatecas</MenuItem>
+                  <MenuItem value={"Nacido en el Extranjero"}>Nacido en el Extranjero</MenuItem>
+                </Select>
+              </FormControl>
+            {/* <TextField
               fullWidth
               size="medium"
               id="state"
@@ -246,7 +314,7 @@ const CrearCliente = ({setValue, cliente, setCliente}) => {
               onChange={formik.handleChange}
               error={formik.touched.state && Boolean(formik.errors.state)}
               helperText={formik.touched.state && formik.errors.state}
-            />
+            /> */}
           </Grid>
 
           <Grid item xs={12} sm={6}>
