@@ -28,7 +28,7 @@ const LayoutGerente = ({setLoginSuccess, setRole}) => {
                <LinkStyled to="/"> <span> Inicio </span> </LinkStyled>
                <LinkStyled to="/crear-empleado"> <span> Crear Empleado </span> </LinkStyled>
                <LinkStyled to = '/empleados'> <span> Empleados </span></LinkStyled>
-               <LinkStyled to = '/creditos'> <span> Creditos </span></LinkStyled>
+               <LinkStyled to = '/creditos'> <span> Creditos Hipotecarios </span></LinkStyled>
                <LinkStyled to='/' onClick={closeSession} > <span>Cerrar Sesión</span> </LinkStyled>
          </Menu>
     </div>

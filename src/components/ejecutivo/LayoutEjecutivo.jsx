@@ -28,7 +28,7 @@ const LayoutEjecutivo = ({setLoginSuccess, setRole}) => {
                 <LinkStyled to="/"> <span>Inicio</span> </LinkStyled>
                 <LinkStyled to="/crear-cuenta"> <span>Crear cuenta</span> </LinkStyled>
                 <LinkStyled to="/clientes"> <span>Clientes</span> </LinkStyled>
-                <LinkStyled to="/credito"> <span>Solicitud de credito</span> </LinkStyled>
+                <LinkStyled to="/credito"> <span>Solicitud Credito Hipotecario</span> </LinkStyled>
                 <LinkStyled to='/' onClick={closeSession} > <span>Cerrar Sesión</span> </LinkStyled>
          </Menu>
     </div>

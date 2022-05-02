@@ -24,7 +24,7 @@ const EjecutivoRoutes = ({ setLoginSuccess, setRole }) => {
              <Route path="crear-cuenta" element={<CrearCuenta />}/>
              <Route path="clientes" element={<Cuentas />}/>
              <Route path="clientes/:id" element={<EstadoCuenta/>}/>
-
+             <Route path = 'opciones' element={<Opciones />} />
              <Route path="credito" element={<Credito />}/>
          </Route>
      </Routes>
