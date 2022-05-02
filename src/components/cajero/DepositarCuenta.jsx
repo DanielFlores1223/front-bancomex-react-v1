@@ -4,6 +4,7 @@ import * as Yup from 'yup';
 import { Grid, TextField, makeStyles, Typography } from "@material-ui/core";
 import { Alert, Snackbar, Button } from '@mui/material';
 import Spinner from '../common/spinner/Spinner';
+import { getCashBoxId } from '../common/functions/general'
 import service from '../../service';
 import { useSnackbar } from "notistack";
 import NumberFormat from 'react-number-format';
@@ -159,7 +160,7 @@ const DepositarCuenta = () => {
   const depositarCuenta = async ({ cardNumber, amountDeposit}, resetForm) => {
     const { developURL } = service
     const token = localStorage.getItem('t')
-    const data = { cardNumber, amount:amountDeposit, type:'Depositar'}
+    const data = { cardNumber, amount:amountDeposit, type:'Depositar', box:getCashBoxId()}
     const url = `${developURL}/transactions`
     const fetchConfig = {
         method: 'POST', 
@@ -202,8 +203,7 @@ const DepositarCuenta = () => {
           xs={12} 
           md={12} 
           lg={12} 
-          alignItems="center" 
-          justifyContent='center' 
+          alignItems="center"
           direction='column'
         >
           {canDeposit?
@@ -224,7 +224,7 @@ const DepositarCuenta = () => {
               disabled={showSpinner}
             />
             <Grid container>
-            <Grid
+            <Grid item
             xs={12} 
             md={6} 
             lg={6} > 
@@ -241,7 +241,7 @@ const DepositarCuenta = () => {
                 helperText={formikDeposit.touched.customerFirstName && formikDeposit.errors.customerFirstName}
               />
             </Grid>
-            <Grid
+            <Grid item
             xs={12} 
             md={6} 
             lg={6} > 
@@ -271,7 +271,7 @@ const DepositarCuenta = () => {
               helperText={formikDeposit.touched.amountDeposit && formikDeposit.errors.amountDeposit}
               disabled={showSpinner}
             />
-            <Button color="primary" 
+            <Button color="primary" sx={{bgcolor:'#103160'}}
                     variant="contained" 
                     fullWidth 
                     type="submit"
@@ -282,7 +282,7 @@ const DepositarCuenta = () => {
             {showSpinner && <Spinner />} 
 
             
-            {msg.show && (<Alert className={classes.alert} severity={msg.type} fullWidth> {msg.txt} </Alert>)}
+            {msg.show && (<Alert className={classes.alert} severity={msg.type}> {msg.txt} </Alert>)}
 
             <Snackbar 
             open={msg.show} 
@@ -307,7 +307,7 @@ const DepositarCuenta = () => {
               helperText={formikFindAccount.touched.cardNumber && formikFindAccount.errors.cardNumber}
               disabled={showSpinner}
             />
-            <Button color="primary" 
+            <Button color="primary" sx={{bgcolor:'#103160'}}
                     variant="contained" 
                     fullWidth 
                     type="submit"
@@ -318,7 +318,7 @@ const DepositarCuenta = () => {
             {showSpinner && <Spinner />} 
 
             
-            {msg.show && (<Alert className={classes.alert} severity={msg.type} fullWidth> {msg.txt} </Alert>)}
+            {msg.show && (<Alert className={classes.alert} severity={msg.type}> {msg.txt} </Alert>)}
 
             <Snackbar 
             open={msg.show} 
