@@ -1,22 +1,25 @@
-import React, { useState } from "react";
-import { QrReader } from "react-qr-reader";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { Grid, makeStyles } from "@material-ui/core";
-import { Alert, Button, Modal, Box } from "@mui/material";
-import Spinner from "../common/spinner/Spinner";
-import service from "../../service";
+import React, { useState } from 'react';
+import { QrReader } from 'react-qr-reader';
+import { Grid, TextField, makeStyles, Typography } from "@material-ui/core";
+import { Alert, Snackbar, Button, Modal, Box, IconButton} from '@mui/material';
+import { Divider, Chip } from '@mui/material';
+import { Backdrop, CircularProgress } from '@mui/material';
+import { Card, CardActionArea, CardContent } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import {QrCodeScanner} from '@mui/icons-material';
+import Spinner from '../common/spinner/Spinner';
+import { getCashBoxId } from '../common/functions/general'
+import service from '../../service';
 import styled from '@emotion/styled';
 
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
+const styleBoxCam = { //Estilo del contenedor al abrir la modal del escaner de QR
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
   width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
   boxShadow: 24,
   p: 1,
 };
@@ -38,7 +41,6 @@ const QrButton = styled.a`
  align-items: center;
  flex-flow: column;
  cursor: pointer;
-
 span{
  margin-bottom:40px;
  display: block;
@@ -59,144 +61,374 @@ span{
   
 `;
 
-
-const styles = makeStyles((theme) => ({
+const styles = makeStyles((theme) => ({ //Estilos generales de ciertos componentes
   marginTextField: {
-    marginBottom: "1rem",
+    marginBottom: '1rem',
   },
   marginCard: {
     margin: '1rem',
   },
   marginDiv: {
-    padding: "1rem 5rem",
-    maxHeight: "100vh",
+      padding: '1rem 5rem',
+      maxHeight: '100vh',
   },
   alert: {
-    maxWidth: "100%",
-    marginBottom: "2rem",
+      maxWidth: '100%',
+      marginTop: '1rem'
   },
-  form: {
-    padding: "2rem 4rem",
-    border: "2px solid #F8F9F9",
-    borderRadius: "10px",
-    background: "#F8F9F9",
-    maxHeight: "100%",
+  gridContainer: {
+      padding: '2rem 4rem 1rem',
+      border: '2px solid #F8F9F9',
+      borderRadius: '10px',
+      background: '#F8F9F9',
+      maxHeight: '100%',
   },
+  divider: {
+    background: '#F8F9F9',
+},
 }));
 
-//FindClient
-const validationSchemaFindClient = Yup.object({
-  clientId: Yup.number()
-    .typeError("Necesitas agregar un numero de cliente")
-    .required("El número de cliente es obligatorio"),
-});
-//
+const RetirarEfectivo = () => {
 
-const RetirarEfectivo = (props) => {
-  const [openQrReader, setopenQrReader] = useState(false);
-  const handleOpenQrReader = () => setopenQrReader(true);
-  const handleCloseQrReader = () => setopenQrReader(false);
+  //Verifica si se encuentra el cliente para no volver a solicitar a la API
+  let waitFindClient = false
 
-  const [data, setData] = useState("No result");
-  const [showSpinner, setShowSpinner] = useState(false);
-  const [msg, setMsg] = useState({ show: false, txt: null, type: null });
+  const [dataClient, setDataClient] = useState(false); //Almacena y edita la información del cliente
+  const [dataRetirar, setDataRetirar] = useState(false); //Almacena y edita los datos para hacer un retiro
+  const [showBackdrop, setshowBackdrop] = useState(false); //Almacena y edita si es necesario poner pantalla de espera
 
-  const classes = styles();
+  const [openQrReader, setopenQrReader] = useState(false); //Permite decidir cuando mostrar el lector de QR
+  const [openFormRetirar, setOpenFormRetirar] = useState(false);//Decide si se va mostrar la ventana final de retirar
+  
+  const handleOpenFormRetirar = () => { //Cambia a mostrar la ventana de retirar
+    setOpenFormRetirar(true);
+  };
 
-  //FindClient
-  const formikFindClient = useFormik({
-    initialValues: {
-      clientId: "",
-    },
-    validationSchema: validationSchemaFindClient,
-    onSubmit: (values, { resetForm }) => {
-      findClient(values, resetForm);
-    },
-  });
-  const findClient = async ({ clientId }, resetForm) => {
-    const { developURL } = service;
-    const token = localStorage.getItem("t");
-    const url = `${developURL}/client/${clientId}`;
-    const fetchConfig = {
-      method: "GET",
-      headers: { "Content-Type": "application/json", Authorization: token },
-    };
+  const handleCloseFormRetirar = () => { //Cambia a cerrar la ventana de retirar
+    setOpenFormRetirar(false);
+  };
+  const handleOpenQrReader = () => { //Cambia a mostrar el lector de QR
+    waitFindClient = false //Permite mandar solicitud a la API
+    setopenQrReader(true);
+  }
+  const handleCloseQrReader = () => { //Cambia a cerrar el lector de QR
+    waitFindClient = true //No permite mandar solicitud a la API
+    setopenQrReader(false);
+  }
+
+  const [showSpinner, setShowSpinner] = useState(false); //Decide cuando mostrar un progreso
+  const [msg, setMsg] = useState({show:false, txt:null, type:null}); //Datos del mensaje a mostrar
+
+  const classes = styles(); //Se guardan los estilos generales
+
+  const findClient = async id => { //Funcion que permite buscar a un cliente por ID en la API
+
+    const { developURL } = service //Se obtiene la URL base
+    const token = localStorage.getItem('t') //Se obtiene el token de la sesión
+    const url = `${developURL}/client/${id}/accounts` //Se define la URL general mandando el ID
+    const fetchConfig = { //Configuración general para el fetch
+        method: 'GET',  //Metodo a utilizar
+        headers: { 'Content-Type': 'application/json', 'Authorization': token} //Encabezado
+    }
+
     try {
-      setShowSpinner(true);
-      const response = await fetch(url, fetchConfig);
-      const jsonResponse = await response.json();
-      setShowSpinner(false);
-      console.log(jsonResponse);
-      if (!jsonResponse.success) {
-        changeMsg("error", "No se encontró una cuenta");
-        return;
+      setShowSpinner(true); //Se muestra progreso
+      const response = await fetch( url, fetchConfig ); //Se espera a la respuesta de la API al entablar la conexión
+      const jsonResponse = await response.json(); //La respuesta de la API se convierte a JSON
+      setShowSpinner(false); //Se deja de mostrar progreso
+      if( !jsonResponse.success ) { //Se verifica si ocurrio un error
+        waitFindClient = false //Se deja de esperar la respuesta de la API y permite volver a generar una nueva solicitud.
+        setshowBackdrop(false) //Deja de poner de fondo la interaccion
+        changeMsg('error','No se encontró una cuenta'); //Se manda un mensaje de error
+        return; //Se sale de la función en caso de ocurrir un error
       }
-      let client = jsonResponse.result;
-      if (!client.state) {
-        changeMsg("error", "La cuenta se encuentra desactivada");
-      } else if (!client.active) {
-        changeMsg("error", "El cliente se encuentra desactivada");
-      } else {
-        //setCanDeposit(true);
-        resetForm();
+      let client = jsonResponse.result //Se guarda la respuesta del cliente en una variable
+      if(!client.active){
+        waitFindClient = false
+        setshowBackdrop(false)
+        changeMsg('error', 'El cliente se encuentra desactivado')
+        }else if(!client.Accounts){
+          waitFindClient = false
+          setshowBackdrop(false)
+          changeMsg('error', 'El cliente no tiene cuentas asociadas')
+      }else{
+        const fullName = `${client.firstName} ${client.lastName}`,
+        curp = client.curp,
+        debitAccounts = client.Accounts.filter(a => a.type === 'Debito' && a.state === true),
+        creditAccounts = client.Accounts.filter(a => a.type === 'Credito' && a.state === true)
+
+        setDataClient({
+          fullName,
+          curp,
+          debitAccounts,
+          creditAccounts
+        })
+        
+      setshowBackdrop(false)
       }
     } catch (error) {
       setShowSpinner(false);
-      changeMsg("error", "Algo salio mal... Intentelo mas tarde!");
+      waitFindClient = false
+      setshowBackdrop(false)
+      changeMsg('error','Algo salio mal... Intentelo mas tarde!');
     }
-  };
+  }
   //
 
   const changeMsg = (type, txt) => {
     setTimeout(() => {
-      setMsg({ show: true, type, txt });
+      setMsg({ show: true, type, txt});
     }, 0);
     setTimeout(() => {
-      setMsg({ ...msg, show: false });
+      setMsg({...msg, show: false});
     }, 3000);
+
+  }
+
+  const codeQrReading = (result, error) => {
+    if (!!result && !waitFindClient) {
+      let arr = result?.text.trim().split(':')
+      if(arr.length === 2){
+        if(arr[0] === 'ID') {
+          waitFindClient = true
+          setshowBackdrop(true)
+          findClient(arr[1])
+          //setTimeout(() => {findClient(arr[1])}, 3000); //Ver la funcionalidad del Backdrop
+          return
+        }
+      } 
+      console.log("Formato de Codigo QR incorrecto!")
+    }
+  }
+
+  const finderClientByQR = () => {
+    return (
+    <Grid align="center">
+    <QrButton onClick={handleOpenQrReader}><span></span>Escaner QR</QrButton>
+    
+    {/* <IconButton  color="primary" onClick={handleOpenQrReader}>
+      <QrCodeScanner sx={{ fontSize: 200 }}/>
+    </IconButton> */}
+    
+    <Modal
+      open={openQrReader}
+      onClose={handleCloseQrReader}
+    >
+      <Box sx={styleBoxCam}>
+        <QrReader
+          videoId="videoQR"
+          onResult={codeQrReading}
+          videoContainerStyle = {{ paddingTop: '75%' }}
+        />
+        
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={showBackdrop}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+        {msg.show && msg.type==='error' && (<Alert className={classes.alert} severity={msg.type}> 
+        {msg.txt} </Alert>)}
+      </Box>
+    </Modal>
+
+  </Grid>
+  )
+  }
+
+  const viewCard = ({cardNumber}) => {
+    return (
+      <Grid item
+            xs={12} 
+            md={6} 
+            lg={6} >
+      <Card className={classes.marginCard}>
+      <CardActionArea onClick={()=>{
+        setDataRetirar({client:dataClient.fullName, cardNumber})
+        handleOpenFormRetirar(true)
+      }}>
+        <CardContent>
+          <Typography variant="body2">
+            {cardNumber}
+          </Typography>
+        </CardContent>
+        </CardActionArea>
+      </Card>
+      </Grid>
+    )
+  }
+
+  const verifyAccounts = (accounts) => {
+    if(accounts.length){
+      return accounts.map(drawCards)
+    }else{
+      return (
+        <Grid item 
+        xs={12} 
+        md={12} 
+        lg={12}>
+      <Alert className={classes.alert} severity='error'> No tiene cuentas </Alert>
+      </Grid>
+      )
+    }
+  }
+
+  const drawCards = (account) => {
+    if(account.Cards.length){
+      return account.Cards.map(viewCard)
+    }else{
+      //return if you can render something when account doesn't find any card
+    }
+  }
+
+  const viewClientWithCards = (props) => {
+
+    return (
+      <Grid>
+        <Typography align="center" variant="h6" className={classes.marginTextField}>
+        {props.fullName}
+        <br/>
+        <b>{props.curp}</b>
+      </Typography>
+      <Divider classes={{root: classes.divider}} flexItem>
+        <Chip label="Tarjetas de Debito"/>
+      </Divider>
+      <Grid container>
+      {verifyAccounts(props.debitAccounts)}
+      </Grid>
+      <Divider classes={{root: classes.divider}} flexItem>
+        <Chip label="Tarjetas de Credito"/>
+      </Divider>
+      <Grid container>
+      {verifyAccounts(props.creditAccounts)}
+      </Grid>
+      </Grid>
+    )
+  }
+
+  const retirarCuenta = async () => {
+    setshowBackdrop(true)
+    const {cardNumber,amount, nip} = dataRetirar
+    const { developURL } = service
+    const token = localStorage.getItem('t')
+    const data = { cardNumber, amount, nip, type:'Retirar', box:getCashBoxId()}
+    const url = `${developURL}/transactions`
+    const fetchConfig = {
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json', 'Authorization': token} ,
+        body: JSON.stringify( data )
+    }
+    try {
+      const response = await fetch( url, fetchConfig );
+      const jsonResponse = await response.json();
+      console.log(jsonResponse)
+      if( !jsonResponse.success ) {
+        if(jsonResponse.error === 'insufficient amount in account'){
+          changeMsg('error','La cantidad disponible es insuficiente');
+        }else{
+          changeMsg('error','Los datos proporcionados son incorrectos');
+        }
+      }else{
+        changeMsg('success', 'Se realizó el retiro')
+        setDataClient(false)
+        setDataRetirar(false)
+        setopenQrReader(false)
+        handleCloseFormRetirar()
+      }
+    } catch (error) {
+      changeMsg('error','Algo salio mal... Intentelo mas tarde!');
+    }
+    setshowBackdrop(false)
+  }
+
+  const handleChangeDataRetirar = (event) => {
+    setDataRetirar({...dataRetirar, [event.target.id]:event.target.value})
   };
 
-  return (
-    // grid container mui
-    <Grid container
-    spacing={0}
-    align="center"
-    justify="center">
-      <Box>
-      <QrButton onClick={handleOpenQrReader}><span></span>Escaner QR</QrButton>
-        <Modal
-          open={openQrReader}
-          onClose={handleCloseQrReader}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            {openQrReader && (
-              <QrReader
-                onResult={(result, error) => {
-                  if (!!result) {
-                    setData(result?.text);
-                  }
+  const viewFormRetirar = ({client, cardNumber}) => {
+    return (
+    <Dialog open={openFormRetirar} onClose={handleCloseFormRetirar}>
+      <DialogTitle>Retirar</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          Cliente: <b>{client}</b>
+          <br/>
+          Tarjeta: <b>{cardNumber}</b>
+        </DialogContentText>
+        <TextField
+          autoFocus
+          margin="dense"
+          id="amount"
+          label="Cantidad ($)"
+          type="number"
+          onChange={handleChangeDataRetirar}
+          fullWidth
+          variant="standard"
+          required
+        />
+        <TextField
+          margin="dense"
+          id="nip"
+          label="NIP"
+          type="password"
+          onChange={handleChangeDataRetirar}
+          fullWidth
+          variant="standard"
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleCloseFormRetirar}>Cancelar</Button>
+        <Button onClick={retirarCuenta}>Retirar</Button>
+      </DialogActions>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={showBackdrop}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    </Dialog>)
+  }
 
-                  if (!!error) {
-                    console.info(error);
-                  }
-                }}
-                videoContainerStyle={{ paddingTop: "75%" }}
-              />
-            )}
-            {showSpinner && <Spinner />}
-            {msg.show && (
-              <Alert className={classes.alert} severity={msg.type} fullWidth>
-                {" "}
-                {msg.txt}{" "}
-              </Alert>
-            )}
-          </Box>
-        </Modal>
-      </Box>
+  return (
+    <Grid container 
+    item 
+    xs={12} 
+    md={12} 
+    lg={12} 
+    alignItems="center" 
+    direction='column'>
+      <Grid className={classes.gridContainer}>
+
+      <Typography align="center" variant="h4" className={classes.marginTextField}>
+        {dataClient?'':'Buscar '}Cliente
+      </Typography>
+
+      {!dataClient && finderClientByQR()}
+
+      {dataClient && viewClientWithCards(dataClient)}
+
+      {showSpinner && <Spinner />} 
+            {showSpinner && <Spinner />} 
+      {showSpinner && <Spinner />} 
+      
+      {msg.show && (<Alert className={classes.alert} severity={msg.type}> {msg.txt} </Alert>)}
+
+      <Snackbar 
+        open={msg.show} 
+        severity={msg.type}
+        message={msg.txt}>
+      </Snackbar>
+
+      </Grid>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={showBackdrop}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      {dataRetirar&&viewFormRetirar(dataRetirar)}
     </Grid>
   );
 };
 
-export default RetirarEfectivo;
+export default RetirarEfectivo
