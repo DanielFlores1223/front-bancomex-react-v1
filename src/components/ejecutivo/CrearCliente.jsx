@@ -93,8 +93,11 @@ const CrearCliente = ({setValue, cliente, setCliente}) => {
     const am = formik.values.lastName.split(' ')[1];
     const res = calcula(ap, am, formik.values.firstName, '2000-12-23', formik.values.gender, formik.values.state);
     
+    formik.values.curp = '';
+    formik.values.rfc = '';
     formik.values.curp = res.CURP;
     formik.values.rfc = res.rfc;
+    console.log('aqui')
   }
   
   return (
@@ -110,7 +113,7 @@ const CrearCliente = ({setValue, cliente, setCliente}) => {
               name="firstName"
               label="Nombres"
               value={formik.values.firstName}
-              onChange={formik.handleChange}
+              onChange={(e) => { formik.handleChange(e); generateCurpRFC(); } }
               error={
                 formik.touched.firstName && Boolean(formik.errors.firstName)
               }
@@ -125,7 +128,7 @@ const CrearCliente = ({setValue, cliente, setCliente}) => {
               name="lastName"
               label="Apellidos"
               value={formik.values.lastName}
-              onChange={formik.handleChange}
+              onChange={(e) => { formik.handleChange(e); generateCurpRFC(); } }
               error={formik.touched.lastName && Boolean(formik.errors.lastName)}
               helperText={formik.touched.lastName && formik.errors.lastName}
             />
@@ -139,7 +142,7 @@ const CrearCliente = ({setValue, cliente, setCliente}) => {
                 name="gender"
                 label="Género"
                 value={formik.values.gender}
-                onChange={formik.handleChange}
+                onChange={(e) => { formik.handleChange(e); generateCurpRFC(); } }
                 error={formik.touched.gender && Boolean(formik.errors.gender)}
               >
                 <MenuItem value={"m"}>Masculino</MenuItem>
@@ -303,6 +306,7 @@ const CrearCliente = ({setValue, cliente, setCliente}) => {
               error={formik.touched.curp && Boolean(formik.errors.curp)}
               helperText={formik.touched.curp && formik.errors.curp}
               inputProps={{ style: { textTransform: "uppercase" } }}
+              onClick={ () => generateCurpRFC() }
             />
           </Grid>
           <Grid item xs={12} sm={4}>

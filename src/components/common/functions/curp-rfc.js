@@ -5,8 +5,114 @@ export function calcula(ap_paterno, ap_materno, nombre, f_nac, sexo, estado) {
     const year = arrayFNac[0].substring(2);
     let rfc = `${year}${arrayFNac[1]}${arrayFNac[2]}`
 
-    if(sexo === 'm') sexo ='H';
-    if(sexo === 'f') sexo = 'M';
+    if(sexo == 'm') sexo ='H';
+    if(sexo == 'f') sexo = 'M';
+    const estadoT = estado.toLowerCase();
+    
+    switch (estadoT) {
+        case 'aguascalientes':
+            estado = 'AS'
+            break;
+        case 'baja california sur':
+            estado = 'BS'
+            break;
+        case 'coahuila':
+            estado = 'CL'
+            break;
+        case 'chiapas':
+            estado = 'CS'
+            break;
+        case 'distrito federal':
+            estado = 'DF'
+            break;
+        case 'guanajuato':
+            estado = 'GT'
+            break;
+        case 'hidalgo':
+            estado = 'HG'
+            break;
+        case 'méxico':
+            estado = 'MC'
+            break;
+        case 'morelos':
+            estado = 'MS'
+            break;
+        case 'nuevo león':
+            estado = 'NL'
+            break;
+        case 'puebla':
+            estado = 'PL'
+            break;
+        case 'quintana roo':
+            estado = 'QR'
+            break;
+        case 'sinaloa':
+            estado = 'SL'
+            break;
+        case 'tabasco':
+            estado = 'TC'
+            break;
+        case 'tlaxcala':
+            estado = 'TL'
+            break;
+        case 'yucatan':
+            estado = 'YN'
+            break;
+        case 'nacido en el extranjero':
+            estado = 'NE'
+            break;
+        case 'baja california':
+            estado = 'BC'
+            break;
+        case 'campeche':
+            estado = 'CC'
+            break;
+        case 'colima':
+            estado = 'CM'
+            break;
+        case 'chihuahua':
+            estado = 'CH'
+            break;
+        case 'durango':
+            estado = 'DG'
+            break;
+        case 'guerrero':
+            estado = 'GR'
+            break;
+        case 'jalisco':
+            estado = 'JC'
+            break;
+        case 'michoacán':
+            estado = 'MN'
+            break;
+        case 'nayarit':
+            estado = 'NT'
+            break;
+        case 'oaxaca':
+            estado = 'OC'
+            break;
+        case 'querétaro':
+            estado = 'QT'
+            break;
+        case 'san luis potosí':
+            estado = 'SP'
+            break;
+        case 'sonora':
+            estado = 'SR'
+            break;
+        case 'tamaulipas':
+            estado = 'TS'
+            break;
+        case 'veracruz':
+            estado = 'VZ'
+            break;
+        case 'zacatecas':
+            estado = 'ZS'
+            break;
+        default:
+            estado = 'JC'
+            break;
+    }
      // var ap_paterno = document.getElementById("ap_paterno").value;
     // var ap_materno = document.getElementById("ap_materno").value;
     // var nombre = document.getElementById("nombre").value;
