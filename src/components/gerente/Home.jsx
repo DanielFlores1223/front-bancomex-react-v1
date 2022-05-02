@@ -1,13 +1,9 @@
 import {useEffect, useState} from 'react'
 import service from '../../service';
-import { styled } from '@mui/material/styles';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
-import Card from '@mui/material/Card';
-import Typography from '@mui/material/Typography';
+import { styled, CardMedia, Paper, Grid, Card, Typography, Box } from '@mui/material';
 import { red } from '@mui/material/colors';
 import { createTheme } from '@mui/system';
-import { CardMedia } from '@mui/material';
+
 
 
 const theme = createTheme({
@@ -168,7 +164,7 @@ console.log(jsonResponse);
       alt="Paella dish"
       />
       
-       <Typography sx={{ fontSize: 20, marginTop:'20px' }} color="text.primary" gutterBottom>
+       <Typography sx={{ fontSize: 20, fontWeight: '600',marginTop:'20px' }} color="text.primary" gutterBottom>
              {title}
             </Typography>
             <Typography variant="h5" component="div" sx={{marginBottom:'20px'}}>
@@ -177,23 +173,50 @@ console.log(jsonResponse);
         </Card>
       )
   return (
-    <div>
-       
-    <h1>Home de Gerente</h1>
-    <Grid container spacing={3}>
-    <Grid item xs={4}>
-      
-    {renderCard('Total cuentas activas', `${resultAccounts}`, 'https://res.cloudinary.com/cardiadev/image/upload/v1651160167/bancomex/cuentas_activas_hpiez5.jpg')}
-    </Grid>
-    <Grid item xs={4}>
 
-    {renderCard('Total creditos otorgados', `${resultCredits}`, 'https://res.cloudinary.com/cardiadev/image/upload/v1651160166/bancomex/creditos_aprobado_hvm5lg.jpg')}
-    </Grid>
-    <Grid item xs={4}>
-    {renderCard('Monto total del banco', `$ ${resultAmount} MXN`, 'https://res.cloudinary.com/cardiadev/image/upload/v1651160167/bancomex/monto_total_banco_eodh0o.jpg')}
-    </Grid>
-  </Grid>   
-      </div>
+    <Box sx={{ width: "85%", margin: "auto" }}>
+      <Grid container spacing={3}>
+        <Grid item xs={12} sm={12} mb={5}>
+          <Box
+            sx={{
+              paddingBottom: "1rem",
+              borderBottom: 1,
+              borderColor: "divider",
+            }}
+          >
+            <Typography variant="h4" color="initial" sx={{ fontWeight: "600" }}>
+              Información General del Banco
+            </Typography>
+          </Box>
+        </Grid>
+        
+        <Grid item xs={12} sm={12}>
+       
+                <Grid container spacing={3} sx={{margin: "auto"}}>
+                <Grid item xs={12} md={7} lg={4}>
+                  
+                {renderCard('Cuentas Activas', `${resultAccounts}`, 'https://res.cloudinary.com/cardiadev/image/upload/v1651160167/bancomex/cuentas_activas_hpiez5.jpg')}
+                </Grid>
+                <Grid item xs={12} md={7} lg={4}>
+            
+                {renderCard('Creditos Otorgados', `${resultCredits}`, 'https://res.cloudinary.com/cardiadev/image/upload/v1651160166/bancomex/creditos_aprobado_hvm5lg.jpg')}
+                </Grid>
+                <Grid item xs={12} md={7} lg={4}>
+                {renderCard('Saldo en Sucursal', `$ ${resultAmount} MXN`, 'https://res.cloudinary.com/cardiadev/image/upload/v1651160167/bancomex/monto_total_banco_eodh0o.jpg')}
+                </Grid>
+              </Grid>
+
+
+        </Grid>
+
+
+
+
+
+
+
+      </Grid>
+    </Box>
   )
 }
 
