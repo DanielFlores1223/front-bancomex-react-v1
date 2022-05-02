@@ -15,6 +15,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import service from "../../service";
 import * as Yup from "yup";
 import RegExpression from "../common/functions/RestringE";
+import { useSnackbar } from "notistack";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -43,6 +44,7 @@ const validationSchema = Yup.object({
   BusinessUnitId: Yup.number(),
 });
 
+// Inicia el formulario
 const ActualizaEmplado = () => {
   const classes = useStyles();
   const navigateTo = useNavigate();
@@ -54,8 +56,12 @@ const ActualizaEmplado = () => {
   const [area, setArea] = useState([]);
   const [areas, setAreas] = useState([]);
 
+  // Notistack
+  const { enqueueSnackbar } = useSnackbar();
+
   const { id } = useParams();
 
+  // Fetch
   const getEmployee = async () => {
     const { developURL } = service;
     const url = `${developURL}/employees/` + id;
@@ -146,12 +152,18 @@ const ActualizaEmplado = () => {
     })
       .then((res) => res.json())
       .then((result) => {
-        alert(["Empleado Actualizado con éxito"]);
+        enqueueSnackbar("Empleado Actualizado con éxito", {
+          variant: "success",
+        });
+        // alert(["Empleado Actualizado con éxito"]);
         if (result.success === true) {
           navigateTo("/empleados");
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => 
+        enqueueSnackbar("Error al actualizar el empleado", {
+          variant: "error",
+          }));
   };
 
   return (

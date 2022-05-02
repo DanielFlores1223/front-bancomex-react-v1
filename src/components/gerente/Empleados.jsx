@@ -1,7 +1,4 @@
 import {
-  Button,
-  Container,
-  Grid,
   makeStyles,
   Paper,
   Table,
@@ -10,8 +7,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
 } from "@material-ui/core";
+import { Typography, Button, Grid } from "@mui/material";
 import { Box } from "@mui/material";
 import Edit from "@material-ui/icons/Edit";
 import React, { useEffect, useState } from "react";
@@ -101,72 +98,76 @@ const Empleados = () => {
   };
 
   return (
-    <div className={classes.root}>
-      <Box display="flex">
-        <Grid
-          container
-          direction="column"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Typography component="h2" variant="h4" color="primary">
-            Empleados
-          </Typography>
+    <Box sx={{ width: "85%", margin: "auto" }}>
+      <Grid container spacing={3}>
+        <Grid item xs={12} sm={12} mb={3}>
+          <Box
+            sx={{
+              paddingBottom: "1rem",
+              borderBottom: 1,
+              borderColor: "divider",
+            }}
+          >
+            <Typography variant="h4" color="initial" sx={{ fontWeight: "600" }}>
+              Empleados
+            </Typography>
+          </Box>
         </Grid>
-      </Box>
-      <Container className={classes.container} maxWidth="lg">
-        <Paper className={classes.paper}>
-          <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell className={classes.trow} align="center">
-                    Nombre
-                  </TableCell>
-                  <TableCell className={classes.trow} align="center">
-                    Apellido
-                  </TableCell>
-                  <TableCell className={classes.trow} align="center">
-                    Rol
-                  </TableCell>
-                  <TableCell className={classes.trow} align="center">
-                    Estado
-                  </TableCell>
-                  <TableCell className={classes.trow} align="center">
-                    Area
-                  </TableCell>
-                  <TableCell className={classes.trow} align="center">
-                    Acción
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {employees.map((employee) => (
-                  <TableRow key={employee.id} className={classes.row}>
-                    <TableCell align="center">{employee.firstName}</TableCell>
-                    <TableCell align="center">{employee.lastName}</TableCell>
-                    <TableCell align="center">{employee.role}</TableCell>
-                    <TableCell align="center">
-                      {employee.status === "true" ? <DoneIcon /> : <Clear />}
+
+        <Grid item xs={12} sm={12} mb={3}>
+          <Paper className={classes.paper}>
+            <TableContainer component={Paper}>
+              <Table className={classes.table} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell className={classes.trow} align="center">
+                      Nombre
                     </TableCell>
-                    <TableCell align="center">
-                      {employee.BusinessUnit.name}
+                    <TableCell className={classes.trow} align="center">
+                      Apellido
                     </TableCell>
-                    <TableCell align="center">
-                      <Button
-                        onClick={() => EmpladoUpdate(employee.id)}
-                        size="large"
-                        startIcon={<Edit />}
-                      />
+                    <TableCell className={classes.trow} align="center">
+                      Rol
+                    </TableCell>
+                    <TableCell className={classes.trow} align="center">
+                      Estado
+                    </TableCell>
+                    <TableCell className={classes.trow} align="center">
+                      Area
+                    </TableCell>
+                    <TableCell className={classes.trow} align="center">
+                      Acción
                     </TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Paper>
-      </Container>
-    </div>
+                </TableHead>
+                <TableBody>
+                  {employees.map((employee) => (
+                    <TableRow key={employee.id} className={classes.row}>
+                      <TableCell align="center">{employee.firstName}</TableCell>
+                      <TableCell align="center">{employee.lastName}</TableCell>
+                      <TableCell align="center">{employee.role}</TableCell>
+                      <TableCell align="center">
+                        {employee.status === "true" ? <DoneIcon /> : <Clear />}
+                      </TableCell>
+                      <TableCell align="center">
+                        {employee.BusinessUnit.name}
+                      </TableCell>
+                      <TableCell align="center">
+                        <Button
+                          onClick={() => EmpladoUpdate(employee.id)}
+                          size="large"
+                          startIcon={<Edit />}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Paper>
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 

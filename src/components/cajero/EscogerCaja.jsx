@@ -95,8 +95,8 @@ const EscogerCaja = ({ setChooseCashBox, setStartCash }) => {
      return (
           <div>
           <div>
-              <Typography variant='h6'>
-                  Escoge una Caja
+              <Typography component="h2" variant="h4" color="primary">
+                  Elije la caja en donde te encuentras
               </Typography>
           </div>
           <Grid container spacing={2}>
@@ -119,21 +119,22 @@ const EscogerCaja = ({ setChooseCashBox, setStartCash }) => {
                         key={ `${Date.now()}${cb.id}${Math.floor(Math.random * 300)}` }
                   >
                       <BoxStyled onClick={ () =>  choseBox(cb.id) }>
-                        <Grid container>
+                        <Grid container sx={{textAlign: 'center'}}>
                           <Grid container 
                                 item 
                                 xs={12} 
                                 justifyContent='flex-end' 
                                 alignItems='center'
+                                
                           >
-                               <Typography variant='body2'>
+                               <Typography variant='body1'>
                                  Disponible
                                </Typography>
                               <FiberManualRecordIcon style={{color: '#4caf51'}} /> 
                           </Grid>
                         </Grid>
                         <img src={ImgCashBox} alt="cashbox img" style={{maxWidth: '100%', height: '15rem'}} />
-                        <Typography variant='h4' align='center'>
+                        <Typography variant='h4' align='center' sx={{textWeight: '400'}}>
                           {cb.name}
                         </Typography>
                       </BoxStyled>  

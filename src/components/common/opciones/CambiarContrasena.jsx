@@ -43,17 +43,20 @@ const CambiarContrasena = () => {
           enqueueSnackbar(
             "Se ha cambiado tu contrseña satisfactoriamente",
             {
+              preventDuplicate: true,
               variant: "success",
             }
           );
           return;
         }
         enqueueSnackbar(jsonResponse.msg, {
+          preventDuplicate: true,
           variant: "error",
         });
       } catch (error) {
         enqueueSnackbar("Hubo un error intentalo de nuevo", {
-          variant: "error",
+          preventDuplicate: true,
+          variant: "warning",
         });
       }
     };
